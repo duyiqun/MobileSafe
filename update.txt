@@ -1,0 +1,1 @@
+﻿{"remoteVersion":"2","desc":"1.添加摇一摇功能\n2.优化了功能","apkUrl":"http://192.168.1.106:8080/MobileSafe.apk"}
