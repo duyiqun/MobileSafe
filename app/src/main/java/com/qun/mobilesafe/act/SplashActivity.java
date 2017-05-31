@@ -1,9 +1,11 @@
-package com.qun.mobilesafe;
+package com.qun.mobilesafe.act;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import com.qun.mobilesafe.R;
+
+public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
