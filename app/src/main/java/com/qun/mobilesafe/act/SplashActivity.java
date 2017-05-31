@@ -3,18 +3,23 @@ package com.qun.mobilesafe.act;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
 import com.qun.mobilesafe.bean.UpdateBean;
+import com.qun.mobilesafe.utils.HttpUtil;
 import com.qun.mobilesafe.utils.PackageUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -70,8 +75,7 @@ public class SplashActivity extends AppCompatActivity {
 //        OkHttpClient okHttpClient_get = new Builder().connectTimeout(1, TimeUnit.SECONDS).build();
 
                 // 02.请求体
-                Request request = new Request.Builder()
-                        .get()//get请求方式
+                Request request = new Request.Builder().get()//get请求方式
                         .url("http://192.168.1.106:8080/update.txt")//网址
                         .build();
 
@@ -90,7 +94,7 @@ public class SplashActivity extends AppCompatActivity {
                     String desc = jsonObject.getString("desc");
                     String apkUrl = jsonObject.getString("apkUrl");
 
-                    UpdateBean bean= new UpdateBean();
+                    UpdateBean bean = new UpdateBean();
                     bean.desc = desc;
                     bean.versionCode = remoteVersion;
                     bean.apkUrl = apkUrl;
@@ -101,7 +105,7 @@ public class SplashActivity extends AppCompatActivity {
                     if (versionCode < remoteVersion) {
                         //弹出对话框
                         initUpdateDialog(bean);
-                    }else {
+                    } else {
                         enterHome();
                     }
                 } catch (IOException e) {
@@ -151,7 +155,65 @@ public class SplashActivity extends AppCompatActivity {
         //6.安装成功
     }
 
+    //下载apk
     private void downLoadApk(UpdateBean bean) {
+        new Thread(new DownLoadApkTask(bean)).start();
+    }
+
+    private class DownLoadApkTask implements Runnable {
+
+        private UpdateBean mBean;
+
+        public DownLoadApkTask(UpdateBean bean) {
+            this.mBean = bean;
+        }
+
+        @Override
+        public void run() {
+
+            InputStream inputStream = null;
+            FileOutputStream fos = null;
+
+            try {
+                Response response = HttpUtil.httpGet(mBean.apkUrl);
+                long contentLength = response.body().contentLength();
+                pd.setMax((int) contentLength);
+                inputStream = response.body().byteStream();
+                File apkFile = new File(Environment.getExternalStorageDirectory(), "MobileSafe19.apk");
+                fos = new FileOutputStream(apkFile);
+                int len = -1;
+                int progress = 0;
+                byte[] buffer = new byte[1024];
+                while ((len = inputStream.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len);
+                    progress += len;
+                    mProgressDialog.setProgress(progress);
+//					SystemClock.sleep(10);
+                }
+                fos.flush();
+
+                mProgressDialog.dismiss();
+                //安装apk
+                //4.下载成功，提示用户安装
+
+                installApk(apkFile);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                enterHome();
+            } finally {
+//				closeIo(inputStream);
+//				closeIo(fos);
+                closeIos(inputStream, fos);
+            }
+        }
+    }
+
+    private void installApk(File apkFile) {
+
+    }
+
+    private void closeIos(InputStream inputStream, FileOutputStream fos) {
 
     }
 
