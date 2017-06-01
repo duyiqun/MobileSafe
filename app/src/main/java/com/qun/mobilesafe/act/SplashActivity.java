@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -23,16 +24,22 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * 实现闪屏界面
+ */
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int REQUEST_CODE = 100;
+    private static final int REQUEST_CODE = 100;//安装请求码
     private TextView mSplashTvVersion;
     private ProgressDialog mProgressDialog;
+
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +82,8 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 //1.访问服务器获取版本信息
                 // 01. 定义okhttp
-                OkHttpClient okHttpClient_get = new OkHttpClient();
-//        OkHttpClient okHttpClient_get = new Builder().connectTimeout(1, TimeUnit.SECONDS).build();
+//                OkHttpClient okHttpClient_get = new OkHttpClient();
+                OkHttpClient okHttpClient_get = new OkHttpClient.Builder().connectTimeout(1, TimeUnit.SECONDS).build();
 
                 // 02.请求体
                 Request request = new Request.Builder().get()//get请求方式
@@ -114,8 +121,10 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    enterHome();
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    enterHome();
                 }
             }
         }).start();
@@ -189,8 +198,8 @@ public class SplashActivity extends AppCompatActivity {
 //					SystemClock.sleep(10);
                 }
                 fos.flush();
-
                 mProgressDialog.dismiss();
+
                 //安装apk
                 //4.下载成功，提示用户安装
                 installApk(apkFile);
@@ -205,6 +214,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    //安装apk
     private void installApk(File apkFile) {
 //		 <intent-filter>
 //         <action android:name="android.intent.action.VIEW" />
@@ -212,7 +222,7 @@ public class SplashActivity extends AppCompatActivity {
 //         <data android:scheme="content" />
 //         <data android:scheme="file" />
 //         <data android:mimeType="application/vnd.android.package-archive" />
-//     </intent-filter>
+//       </intent-filter>
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
         intent.addCategory("android.intent.category.DEFAULT");
@@ -222,6 +232,25 @@ public class SplashActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CODE);
         //5.判断是否安装
         //6.安装成功
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            switch (resultCode) {
+                case RESULT_OK:
+                    //确定
+                    break;
+                case RESULT_CANCELED:
+                    //取消
+                    System.out.println("RESULT_CANCELED");
+                    enterHome();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     private void closeIOs(Closeable... ios) {
@@ -239,13 +268,13 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void enterHome() {
-//        mHandler.postDelayed(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                startActivity( new Intent(SplashActivity.this,HomeActivity.class));
-//                finish();
-//            }
-//        }, 2000);
+        mHandler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                finish();
+            }
+        }, 2000);
     }
 }
