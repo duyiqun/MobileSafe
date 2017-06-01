@@ -1,14 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.qun.mobilesafe.act.SettingActivity">
 
     <TextView
         style="@style/style_title"
-        android:text="设置中心" />
+        android:text="设置中心"/>
+
+    <com.qun.mobilesafe.view.SettingItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/first_normal">
+
+    </com.qun.mobilesafe.view.SettingItemView>
+
+    <com.qun.mobilesafe.view.SettingItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/middle_normal">
+
+    </com.qun.mobilesafe.view.SettingItemView>
+
+    <com.qun.mobilesafe.view.SettingItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/last_normal">
+
+    </com.qun.mobilesafe.view.SettingItemView>
 
 </LinearLayout>

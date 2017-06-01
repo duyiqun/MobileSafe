@@ -20,7 +20,7 @@
     <style name="style_title" parent="android:Widget.Holo.Light.TextView">
         <item name="android:background">#63AED7</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">#fff</item>
+        <item name="android:textColor">#ffffff</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:textSize">16sp</item>
