@@ -14,7 +14,7 @@ import com.qun.mobilesafe.R;
 public class SettingItemView extends RelativeLayout {
 
     public SettingItemView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public SettingItemView(Context context, AttributeSet attrs) {
@@ -24,10 +24,10 @@ public class SettingItemView extends RelativeLayout {
     }
 
     public SettingItemView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs);
     }
 
     public SettingItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+        this(context, attrs, defStyleAttr);
     }
 }
