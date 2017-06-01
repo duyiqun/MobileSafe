@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:qun="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,21 +16,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="@drawable/first_normal">
+        android:background="@drawable/first_normal"
+        qun:backgroundType="first"
+        qun:title="自动更新">
 
     </com.qun.mobilesafe.view.SettingItemView>
 
     <com.qun.mobilesafe.view.SettingItemView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/middle_normal">
+        android:background="@drawable/middle_normal"
+        qun:backgroundType="middle"
+        qun:title="归属地显示风格">
 
     </com.qun.mobilesafe.view.SettingItemView>
 
     <com.qun.mobilesafe.view.SettingItemView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/last_normal">
+        android:background="@drawable/last_normal"
+        qun:backgroundType="last"
+        qun:title="归属地风格显示设置">
 
     </com.qun.mobilesafe.view.SettingItemView>
 
