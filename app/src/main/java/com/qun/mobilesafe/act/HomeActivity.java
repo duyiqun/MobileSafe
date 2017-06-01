@@ -82,7 +82,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 3:
                 System.out.println("功能设置");
-//                startActivity(new Intent(HomeActivity.this, SettingActivity.class));
+                startActivity(new Intent(HomeActivity.this, SettingActivity.class));
                 break;
             default:
                 break;

@@ -3,7 +3,7 @@
           package="com.qun.mobilesafe">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!--读写sd卡权限-->
+    <!-- 读写sd卡权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
@@ -23,7 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".act.HomeActivity" android:theme="@style/activity_style">
+        <activity
+            android:name=".act.HomeActivity"
+            android:theme="@style/activity_style">
+        </activity>
+        <activity
+            android:name=".act.SettingActivity"
+            android:theme="@style/activity_style">
         </activity>
     </application>
 
