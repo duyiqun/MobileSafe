@@ -14,7 +14,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:text="版本：1.0"
+        android:text="版本 1.0"
         android:textColor="#ffffff"/>
 
 </RelativeLayout>

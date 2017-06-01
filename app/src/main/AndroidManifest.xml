@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".act.HomeActivity">
+        <activity android:name=".act.HomeActivity" android:theme="@style/activity_style">
         </activity>
     </application>
 
