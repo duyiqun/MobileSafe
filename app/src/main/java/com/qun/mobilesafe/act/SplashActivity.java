@@ -2,6 +2,8 @@ package com.qun.mobilesafe.act;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +18,7 @@ import com.qun.mobilesafe.utils.PackageUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,6 +30,7 @@ import okhttp3.Response;
 
 public class SplashActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE = 100;
     private TextView mSplashTvVersion;
     private ProgressDialog mProgressDialog;
 
@@ -149,10 +153,6 @@ public class SplashActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
-
-        //4.下载成功，提示用户安装
-        //5.判断是否安装
-        //6.安装成功
     }
 
     //下载apk
@@ -170,16 +170,14 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-
             InputStream inputStream = null;
             FileOutputStream fos = null;
-
             try {
                 Response response = HttpUtil.httpGet(mBean.apkUrl);
                 long contentLength = response.body().contentLength();
-                pd.setMax((int) contentLength);
+                mProgressDialog.setMax((int) contentLength);
                 inputStream = response.body().byteStream();
-                File apkFile = new File(Environment.getExternalStorageDirectory(), "MobileSafe19.apk");
+                File apkFile = new File(Environment.getExternalStorageDirectory(), "MobileSafe.apk");
                 fos = new FileOutputStream(apkFile);
                 int len = -1;
                 int progress = 0;
@@ -195,26 +193,49 @@ public class SplashActivity extends AppCompatActivity {
                 mProgressDialog.dismiss();
                 //安装apk
                 //4.下载成功，提示用户安装
-
                 installApk(apkFile);
-
             } catch (IOException e) {
                 e.printStackTrace();
                 enterHome();
             } finally {
-//				closeIo(inputStream);
-//				closeIo(fos);
-                closeIos(inputStream, fos);
+//				closeIO(inputStream);
+//				closeIO(fos);
+                closeIOs(inputStream, fos);
             }
         }
     }
 
     private void installApk(File apkFile) {
-
+//		 <intent-filter>
+//         <action android:name="android.intent.action.VIEW" />
+//         <category android:name="android.intent.category.DEFAULT" />
+//         <data android:scheme="content" />
+//         <data android:scheme="file" />
+//         <data android:mimeType="application/vnd.android.package-archive" />
+//     </intent-filter>
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        intent.addCategory("android.intent.category.DEFAULT");
+        Uri data = Uri.fromFile(apkFile);
+        intent.setDataAndType(data, "application/vnd.android.package-archive");
+//		startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE);
+        //5.判断是否安装
+        //6.安装成功
     }
 
-    private void closeIos(InputStream inputStream, FileOutputStream fos) {
-
+    private void closeIOs(Closeable... ios) {
+        for (int i = 0; i < ios.length; i++) {
+            Closeable closeable = ios[i];
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    enterHome();
+                }
+            }
+        }
     }
 
     private void enterHome() {
