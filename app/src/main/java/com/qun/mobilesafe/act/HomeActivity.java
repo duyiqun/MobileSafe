@@ -2,6 +2,7 @@ package com.qun.mobilesafe.act;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.qun.mobilesafe.R;
+import com.qun.mobilesafe.adapter.HomeAdapter;
 import com.qun.mobilesafe.bean.HomeBean;
 
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private final static String[] DESCS = new String[]{"工具大全", "管理运行进程", "病毒无处藏身", "管理您的软件"};
 
-    private final static int[] ICONS = new int[]{R.mipmap.cygj, R.mipmap.jcgl, R.mipmap.sjsd, R.mipmap.rjgj};
+    private final static int[] ICONS = new int[]{R.mipmap.cygj, R.mipmap.jcgl, R.mipmap.sjsd, R.mipmap.szzx};
     private ImageView mHomeIvLogo;
     private GridView mHomeGv;
 
@@ -53,18 +55,37 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         oa.start();
 
         //封装数据
-        List<HomeBean> datas = new ArrayList<HomeBean>();
+        List<HomeBean> data = new ArrayList<>();
         for (int i = 0; i < TITLES.length; i++) {
             HomeBean bean = new HomeBean();
             bean.desc = DESCS[i];
             bean.imageId = ICONS[i];
             bean.title = TITLES[i];
-            datas.add(bean);
+            data.add(bean);
         }
+
+        HomeAdapter adapter = new HomeAdapter(HomeActivity.this, data);
+        mHomeGv.setAdapter(adapter);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        switch (position) {
+            case 0:
+                System.out.println("常用工具");
+                break;
+            case 1:
+                System.out.println("进程管理");
+                break;
+            case 2:
+                System.out.println("手机杀毒");
+                break;
+            case 3:
+                System.out.println("功能设置");
+//                startActivity(new Intent(HomeActivity.this, SettingActivity.class));
+                break;
+            default:
+                break;
+        }
     }
 }
