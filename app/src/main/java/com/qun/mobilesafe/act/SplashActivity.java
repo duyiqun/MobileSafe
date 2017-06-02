@@ -3,6 +3,7 @@ package com.qun.mobilesafe.act;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.qun.mobilesafe.R;
 import com.qun.mobilesafe.bean.UpdateBean;
 import com.qun.mobilesafe.utils.Contants;
+import com.qun.mobilesafe.utils.GzipUtil;
 import com.qun.mobilesafe.utils.HttpUtil;
 import com.qun.mobilesafe.utils.PackageUtil;
 import com.qun.mobilesafe.utils.SpUtil;
@@ -67,6 +69,9 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             enterHome();
         }
+
+        //数据初始化操作（数据库的复制与sp的创建）
+        copyCommonDb();
     }
 
     private void initVersionName() {
@@ -283,5 +288,24 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         }, 2000);
+    }
+
+    private void copyCommonDb() {
+        final File targetFile = new File(getFilesDir(), "address.db");
+        if (targetFile.exists()) {
+            return;
+        }
+        new Thread() {
+            public void run() {
+                //将assets里面的zip解压到data/data/包名/file内部
+                AssetManager assetManager = getAssets();//用于管理assets的管理类
+                try {
+                    InputStream inputStream = assetManager.open("address.zip");
+                    GzipUtil.unZip(inputStream, targetFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 }
