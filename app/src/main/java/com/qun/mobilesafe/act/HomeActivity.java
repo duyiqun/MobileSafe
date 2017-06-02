@@ -3,12 +3,14 @@ package com.qun.mobilesafe.act;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
 import com.qun.mobilesafe.adapter.HomeAdapter;
@@ -40,6 +42,11 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         mHomeIvLogo = (ImageView) findViewById(R.id.home_iv_logo);
         mHomeGv = (GridView) findViewById(R.id.home_gv);
         mHomeGv.setOnItemClickListener(this);
+
+//        //修改字体
+//        TextView homeTvTitle = (TextView) findViewById(R.id.home_tv_title);
+//        Typeface typeface = Typeface.createFromAsset(getAssets(), "font/xxx.ttf");
+//        homeTvTitle.setTypeface(typeface);
     }
 
     private void initData() {
