@@ -6,37 +6,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.qun.mobilesafe.act.SettingActivity">
+    tools:context="com.qun.mobilesafe.act.CommonToolActivity">
 
     <TextView
         style="@style/style_title"
-        android:text="设置中心"/>
+        android:text="常用工具"/>
 
     <com.qun.mobilesafe.view.SettingItemView
-        android:id="@+id/siv_autoupdate"
+        android:id="@+id/common_tool_siv_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/first_normal"
+        qun:backgroundType="first"
+        qun:enable="false"
+        qun:title="号码归属地查询">
+
+    </com.qun.mobilesafe.view.SettingItemView>
+
+    <com.qun.mobilesafe.view.SettingItemView
+        android:id="@+id/common_tool_siv_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        qun:backgroundType="last"
+        qun:enable="false"
+        qun:title="常用号码查询">
+
+    </com.qun.mobilesafe.view.SettingItemView>
+
+    <com.qun.mobilesafe.view.SettingItemView
+        android:id="@+id/common_tool_siv_applock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         qun:backgroundType="first"
-        qun:title="自动更新">
+        qun:enable="false"
+        qun:title="程序锁管理">
 
     </com.qun.mobilesafe.view.SettingItemView>
 
     <com.qun.mobilesafe.view.SettingItemView
-        android:id="@+id/siv_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        qun:backgroundType="middle"
-        qun:title="归属地显示风格">
-
-    </com.qun.mobilesafe.view.SettingItemView>
-
-    <com.qun.mobilesafe.view.SettingItemView
-        android:id="@+id/siv_location_style"
+        android:id="@+id/common_tool_siv_dog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         qun:backgroundType="last"
-        qun:title="归属地风格显示设置">
+        qun:title="开启电子狗">
 
     </com.qun.mobilesafe.view.SettingItemView>
 

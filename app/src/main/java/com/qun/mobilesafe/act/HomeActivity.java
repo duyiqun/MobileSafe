@@ -80,6 +80,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (position) {
             case 0:
                 System.out.println("常用工具");
+                startActivity(new Intent(HomeActivity.this, CommonToolActivity.class));
                 break;
             case 1:
                 System.out.println("进程管理");

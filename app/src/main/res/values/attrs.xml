@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="SettingItemView">
         <attr name="title" format="string"/>
+        <attr name="enable" format="boolean"/>
         <attr name="backgroundType">
             <enum name="first" value="0"/>
             <enum name="middle" value="1"/>

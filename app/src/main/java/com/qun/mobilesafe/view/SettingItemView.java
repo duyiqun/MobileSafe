@@ -59,6 +59,14 @@ public class SettingItemView extends RelativeLayout {
         }
         //获取图片控件
         mSivItemIcon = (ImageView) view.findViewById(R.id.siv_item_icon);
+
+        //获取属性值判断是否要显示开关图片即可
+        boolean enable = typedArray.getBoolean(R.styleable.SettingItemView_enable, true);
+        if (enable) {
+            mSivItemIcon.setVisibility(View.VISIBLE);
+        }else{
+            mSivItemIcon.setVisibility(View.INVISIBLE);
+        }
     }
 
     public SettingItemView(Context context, AttributeSet attrs, int defStyleAttr) {
