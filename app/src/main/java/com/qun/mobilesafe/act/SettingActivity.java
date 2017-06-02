@@ -53,10 +53,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 mSivAutoupdate.toggle();
                 break;
             case R.id.siv_location://归属地
-
+                mSivLocation.toggle();
                 break;
             case R.id.siv_location_style://风格设置
-
+                mSivLocationStyle.toggle();
                 break;
             default:
                 break;
