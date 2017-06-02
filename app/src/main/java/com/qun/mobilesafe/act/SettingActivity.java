@@ -1,15 +1,18 @@
 package com.qun.mobilesafe.act;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.qun.mobilesafe.R;
+import com.qun.mobilesafe.utils.Contants;
+import com.qun.mobilesafe.utils.SpUtil;
 import com.qun.mobilesafe.view.SettingItemView;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private SettingItemView mSivAutoupdate;
+    private SettingItemView mSivAutoUpdate;
     private SettingItemView mSivLocation;
     private SettingItemView mSivLocationStyle;
 
@@ -24,12 +27,18 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initView() {
-        mSivAutoupdate = (SettingItemView) findViewById(R.id.siv_autoupdate);
+        mSivAutoUpdate = (SettingItemView) findViewById(R.id.siv_autoupdate);
         mSivLocation = (SettingItemView) findViewById(R.id.siv_location);
         mSivLocationStyle = (SettingItemView) findViewById(R.id.siv_location_style);
-        mSivAutoupdate.setOnClickListener(this);
+        mSivAutoUpdate.setOnClickListener(this);
         mSivLocation.setOnClickListener(this);
         mSivLocationStyle.setOnClickListener(this);
+
+        //界面展示时，根据记录的状态值，显示开关
+//		SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
+//		boolean flag = sp.getBoolean("autoUpdate", true);
+        boolean flag = SpUtil.getBoolean(getApplicationContext(), Contants.KEY_AUTO_UPDATE, true);
+        mSivAutoUpdate.setToggle(flag);
     }
 
     @Override
@@ -37,20 +46,24 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.siv_autoupdate://自动更新
 //                if (flag) {
-//                    mSivAutoupdate.setToggle(false);
+//                    mSivAutoUpdate.setToggle(false);
 //                    flag = false;
 //                }else{
-//                    mSivAutoupdate.setToggle(true);
+//                    mSivAutoUpdate.setToggle(true);
 //                    flag = true;
 //                }
 
-//                mSivAutoupdate.setToggle(!flag);
+//                mSivAutoUpdate.setToggle(!flag);
 //                flag = !flag;
 
-//                mSivAutoupdate.setToggle(!mSivAutoupdate.isToggle());
+//                mSivAutoUpdate.setToggle(!mSivAutoUpdate.isToggle());
 //                flag = !flag;
 
-                mSivAutoupdate.toggle();
+                mSivAutoUpdate.toggle();
+                //记录自动更新的状态值
+//                SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
+//                sp.edit().putBoolean("autoUpdate", mSivAutoUpdate.isToggle()).commit();
+                SpUtil.saveBoolean(getApplicationContext(), mSivAutoUpdate.isToggle(), Contants.KEY_AUTO_UPDATE);
                 break;
             case R.id.siv_location://归属地
                 mSivLocation.toggle();

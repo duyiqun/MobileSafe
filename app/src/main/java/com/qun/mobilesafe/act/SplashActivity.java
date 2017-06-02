@@ -13,8 +13,10 @@ import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
 import com.qun.mobilesafe.bean.UpdateBean;
+import com.qun.mobilesafe.utils.Contants;
 import com.qun.mobilesafe.utils.HttpUtil;
 import com.qun.mobilesafe.utils.PackageUtil;
+import com.qun.mobilesafe.utils.SpUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +61,12 @@ public class SplashActivity extends AppCompatActivity {
         initVersionName();
 
         //自动更新功能
-        upDateVersion();
+        boolean flag = SpUtil.getBoolean(getApplicationContext(), Contants.KEY_AUTO_UPDATE, true);
+        if (flag) {
+            upDateVersion();
+        } else {
+            enterHome();
+        }
     }
 
     private void initVersionName() {
