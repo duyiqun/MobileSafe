@@ -13,6 +13,7 @@
         android:text="设置中心"/>
 
     <com.qun.mobilesafe.view.SettingItemView
+        android:id="@+id/siv_autoupdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -23,6 +24,7 @@
     </com.qun.mobilesafe.view.SettingItemView>
 
     <com.qun.mobilesafe.view.SettingItemView
+        android:id="@+id/siv_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/middle_normal"
@@ -32,6 +34,7 @@
     </com.qun.mobilesafe.view.SettingItemView>
 
     <com.qun.mobilesafe.view.SettingItemView
+        android:id="@+id/siv_location_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/last_normal"

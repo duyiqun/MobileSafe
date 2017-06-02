@@ -18,6 +18,7 @@ public class SettingItemView extends RelativeLayout {
 
     private TextView mSivItemTitle;
     private ImageView mSivItemIcon;
+    private boolean flag = false;//用来记录开关的状态
 
     public SettingItemView(Context context) {
         this(context, null);
@@ -39,11 +40,11 @@ public class SettingItemView extends RelativeLayout {
         mSivItemTitle.setText(title);
 
         //获取背景类型值，设置对应背景图片
-        int bgType = typedArray.getInt(R.styleable.SettingItemView_backgroundType, -1);
-        if (bgType == -1) {
+        int backgroundType = typedArray.getInt(R.styleable.SettingItemView_backgroundType, -1);
+        if (backgroundType == -1) {
             throw new RuntimeException("请设置backgroundType属性！");
         }
-        switch (bgType) {
+        switch (backgroundType) {
             case 0:
                 this.setBackgroundResource(R.drawable.selector_siv_first);
                 break;
@@ -56,6 +57,7 @@ public class SettingItemView extends RelativeLayout {
             default:
                 break;
         }
+        //获取图片控件
         mSivItemIcon = (ImageView) view.findViewById(R.id.siv_item_icon);
     }
 
@@ -65,5 +67,29 @@ public class SettingItemView extends RelativeLayout {
 
     public SettingItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         this(context, attrs, defStyleAttr);
+    }
+
+    public void setTitle(String title) {
+        mSivItemTitle.setText(title);
+    }
+
+    //设置开关的图片切换
+    public void setToggle(boolean b) {
+        if (b) {
+            mSivItemIcon.setImageResource(R.mipmap.on);
+        } else {
+            mSivItemIcon.setImageResource(R.mipmap.off);
+        }
+        this.flag = b;
+    }
+
+    //返回当前的开关的状态
+    public boolean isToggle() {
+        return this.flag;
+    }
+
+    //让开关进行切换即可
+    public void toggle() {
+        setToggle(!this.flag);
     }
 }
