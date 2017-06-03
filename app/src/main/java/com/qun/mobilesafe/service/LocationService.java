@@ -5,10 +5,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qun.mobilesafe.db.LocationDao;
@@ -29,14 +33,50 @@ public class LocationService extends Service {
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING://响铃
                     Toast.makeText(getApplicationContext(), location, Toast.LENGTH_SHORT).show();
+                    //仿照toast的源码实现在电话界面悬浮的效果
+                    showLocationToast(location);
                     break;
                 case TelephonyManager.CALL_STATE_IDLE://停滞
+                    //仿照toast的源码实现悬浮的效果隐藏功能
+                    hideLocationToast();
                     break;
                 default:
                     break;
             }
         }
     };
+
+    WindowManager mWM;
+    TextView mView;
+
+    private void showLocationToast(String location) {
+
+        mWM = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        mView = new TextView(getApplicationContext());
+        mView.setText(location);
+        mView.setTextColor(Color.RED);
+        WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
+        mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        mParams.format = PixelFormat.TRANSLUCENT;//以像素为单位显示界面
+        mParams.type = WindowManager.LayoutParams.TYPE_TOAST;//设置窗口的类型
+        mParams.setTitle("Toast");
+        mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        mWM.addView(mView, mParams);
+    }
+
+    private void hideLocationToast() {
+        if (mView != null) {
+            // note: checking parent() just to make sure the view has
+            // been added...  i have seen cases where we get here when
+            // the view isn't yet added, so let's try not to crash.
+            if (mView.getParent() != null) {
+                mWM.removeView(mView);
+            }
+            mView = null;
+        }
+    }
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
