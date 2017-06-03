@@ -1,12 +1,14 @@
 package com.qun.mobilesafe.act;
 
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.qun.mobilesafe.R;
+import com.qun.mobilesafe.service.LocationService;
 import com.qun.mobilesafe.utils.Contants;
+import com.qun.mobilesafe.utils.ServiceStateUtil;
 import com.qun.mobilesafe.utils.SpUtil;
 import com.qun.mobilesafe.view.SettingItemView;
 
@@ -66,7 +68,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 SpUtil.saveBoolean(getApplicationContext(), mSivAutoUpdate.isToggle(), Contants.KEY_AUTO_UPDATE);
                 break;
             case R.id.siv_location://归属地
+                //点击时，切换开关，将服务根据当前的状态进行关闭与打开即可
                 mSivLocation.toggle();
+                if (ServiceStateUtil.isServiceRunning(getApplicationContext(), LocationService.class)) {
+                    stopService(new Intent(SettingActivity.this, LocationService.class));
+                } else {
+                    startService(new Intent(SettingActivity.this, LocationService.class));
+                }
                 break;
             case R.id.siv_location_style://风格设置
                 mSivLocationStyle.toggle();

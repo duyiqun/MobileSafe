@@ -40,6 +40,8 @@
             android:name=".act.LocationActivity"
             android:theme="@style/activity_style">
         </activity>
+
+        <service android:name="com.qun.mobilesafe.service.LocationService"></service>
     </application>
 
 </manifest>
