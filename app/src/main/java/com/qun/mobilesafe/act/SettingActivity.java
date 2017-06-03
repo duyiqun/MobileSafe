@@ -83,4 +83,15 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //当界面显示时，根据服务的状态实时地设置开关状态
+        if (ServiceStateUtil.isServiceRunning(getApplicationContext(), LocationService.class)) {
+            mSivLocation.setToggle(true);
+        } else {
+            mSivLocation.setToggle(false);
+        }
+    }
 }
