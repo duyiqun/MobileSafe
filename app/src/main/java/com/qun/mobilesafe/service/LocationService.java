@@ -1,8 +1,10 @@
 package com.qun.mobilesafe.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.telephony.PhoneStateListener;
@@ -19,6 +21,7 @@ public class LocationService extends Service {
 
     private TelephonyManager mTelephonyManager;
     private PhoneStateListener mListener = new PhoneStateListener() {
+
         //参数一：电话状态，参数二：来电的状态
         public void onCallStateChanged(int state, String incomingNumber) {
             //响铃时，显示归属地，挂断时，隐藏归属地
@@ -32,6 +35,16 @@ public class LocationService extends Service {
                 default:
                     break;
             }
+        }
+    };
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //监听到去电广播后，获取号码，查询归属地
+            String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+            String location = LocationDao.queryLocation(getApplicationContext(), number);
+            Toast.makeText(getApplicationContext(), location, Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -50,6 +63,11 @@ public class LocationService extends Service {
         //通过电话管理器监听来电
         mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         mTelephonyManager.listen(mListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+        // 监听去电
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+        registerReceiver(receiver, filter);
     }
 
     @Override
@@ -58,5 +76,6 @@ public class LocationService extends Service {
         System.out.println("归属地服务关闭");
         //服务关闭时，将电话监听停止
         mTelephonyManager.listen(mListener, PhoneStateListener.LISTEN_NONE);
+        unregisterReceiver(receiver);
     }
 }
