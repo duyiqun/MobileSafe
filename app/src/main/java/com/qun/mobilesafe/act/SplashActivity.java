@@ -295,7 +295,8 @@ public class SplashActivity extends AppCompatActivity {
         if (targetFile.exists()) {
             return;
         }
-        new Thread() {
+        new Thread(new Runnable() {
+            @Override
             public void run() {
                 //将assets里面的zip解压到data/data/包名/file内部
                 AssetManager assetManager = getAssets();//用于管理assets的管理类
@@ -306,6 +307,6 @@ public class SplashActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        }.start();
+        }).start();
     }
 }
