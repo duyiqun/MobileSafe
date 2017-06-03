@@ -1,8 +1,10 @@
 package com.qun.mobilesafe.act;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -34,6 +36,29 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         mLocationEtNumber = (EditText) findViewById(R.id.location_et_number);
         mLocationTv = (TextView) findViewById(R.id.location_tv);
         mLocationBtn.setOnClickListener(this);
+        //通过文字改变监听实现实时查询功能(本地数据库查询),客户端里面网络请求不做实时查询操作，本地数据库则可以
+        mLocationEtNumber.addTextChangedListener(new TextWatcher() {
+            //当文字改变时
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            //当文字改变前
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            //当文字改变后
+            @Override
+            public void afterTextChanged(Editable s) {
+                String number = s.toString();
+                //将号码从数据库进行查询
+                String location = LocationDao.queryLocation(getApplicationContext(), number);
+                mLocationTv.setText(location);
+            }
+        });
     }
 
     @Override

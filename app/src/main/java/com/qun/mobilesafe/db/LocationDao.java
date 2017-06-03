@@ -24,8 +24,8 @@ public class LocationDao {
         String reg = "^1[3-8]\\d{9}$";
         String location = "未知";
         if (number.matches(reg)) {
-            String mobileprefix = number.substring(0, 7);
-            String[] selectionArgs = new String[]{mobileprefix};
+            String mobilePrefix = number.substring(0, 7);
+            String[] selectionArgs = new String[]{mobilePrefix};
 //            select cardtype from info where mobileprefix = '1368314';
             Cursor cardtypeCursor = database.rawQuery("select cardtype from info where mobileprefix = ?", selectionArgs);
             if (cardtypeCursor != null) {
@@ -78,6 +78,7 @@ public class LocationDao {
                 default:
                     break;
             }
-        } return location;
+        }
+        return location;
     }
 }
