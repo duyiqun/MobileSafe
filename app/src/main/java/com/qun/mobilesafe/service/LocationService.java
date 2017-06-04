@@ -5,17 +5,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.view.WindowManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qun.mobilesafe.db.LocationDao;
+import com.qun.mobilesafe.view.LocationToast;
 
 /**
  * Created by Qun on 2017/6/3.
@@ -34,11 +31,13 @@ public class LocationService extends Service {
                 case TelephonyManager.CALL_STATE_RINGING://响铃
                     Toast.makeText(getApplicationContext(), location, Toast.LENGTH_SHORT).show();
                     //仿照toast的源码实现在电话界面悬浮的效果
-                    showLocationToast(location);
+//                    showLocationToast(location);
+                    mLocationToast.showLocationToast(location);
                     break;
                 case TelephonyManager.CALL_STATE_IDLE://停滞
                     //仿照toast的源码实现悬浮的效果隐藏功能
-                    hideLocationToast();
+//                    hideLocationToast();
+                    mLocationToast.hideLocationToast();
                     break;
                 default:
                     break;
@@ -46,36 +45,39 @@ public class LocationService extends Service {
         }
     };
 
-    WindowManager mWM;
-    TextView mView;
+//    WindowManager mWM;
+//    TextView mView;
 
-    private void showLocationToast(String location) {
+//    private void showLocationToast(String location) {
+//        //WindowManager:窗口管理器，添加，删除，修改窗口
+//        //window：是android中最顶层的界面元素。在android看不见的一个框，将view放入到window里面才能在屏幕上进行显示（activity，dialog，toast都是通过窗口来显示的）
+//        mWM = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+//        mView = new TextView(getApplicationContext());
+//        mView.setText(location);
+//        mView.setTextColor(Color.RED);
+//        //布局参数，设置窗口的一些属性
+//        WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
+//        mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//        mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+//        mParams.format = PixelFormat.TRANSLUCENT;//以像素为单位显示界面
+//        mParams.type = WindowManager.LayoutParams.TYPE_TOAST;//设置窗口的类型
+//        mParams.setTitle("Toast");
+//        mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+//        //创建出一个窗口，使用mParams设置该窗口的一些属性，将mView放入窗口再进行显示
+//        mWM.addView(mView, mParams);
+//    }
 
-        mWM = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        mView = new TextView(getApplicationContext());
-        mView.setText(location);
-        mView.setTextColor(Color.RED);
-        WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
-        mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        mParams.format = PixelFormat.TRANSLUCENT;//以像素为单位显示界面
-        mParams.type = WindowManager.LayoutParams.TYPE_TOAST;//设置窗口的类型
-        mParams.setTitle("Toast");
-        mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-        mWM.addView(mView, mParams);
-    }
-
-    private void hideLocationToast() {
-        if (mView != null) {
-            // note: checking parent() just to make sure the view has
-            // been added...  i have seen cases where we get here when
-            // the view isn't yet added, so let's try not to crash.
-            if (mView.getParent() != null) {
-                mWM.removeView(mView);
-            }
-            mView = null;
-        }
-    }
+//    private void hideLocationToast() {
+//        if (mView != null) {
+//            // note: checking parent() just to make sure the view has
+//            // been added...  i have seen cases where we get here when
+//            // the view isn't yet added, so let's try not to crash.
+//            if (mView.getParent() != null) {
+//                mWM.removeView(mView);
+//            }
+//            mView = null;
+//        }
+//    }
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -87,6 +89,7 @@ public class LocationService extends Service {
             Toast.makeText(getApplicationContext(), location, Toast.LENGTH_SHORT).show();
         }
     };
+    private LocationToast mLocationToast;
 
     @Nullable
     @Override
@@ -98,6 +101,8 @@ public class LocationService extends Service {
     public void onCreate() {
         super.onCreate();
         System.out.println("归属地服务打开");
+
+        mLocationToast = new LocationToast(this);
 
         //监听来去电
         //通过电话管理器监听来电
