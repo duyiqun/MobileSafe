@@ -23,6 +23,9 @@ public class RocketToast implements View.OnTouchListener {
     private int startX;
     private int startY;
     private ImageView mTipView;
+    int[] rocketLocation = new int[2];//火箭的位置
+    int[] tipLocation = new int[2];//提示框的位置
+    private boolean mShouldSend = false;//记录当前是否是发射状态
 
     public RocketToast(Context context) {
         super();
@@ -30,6 +33,7 @@ public class RocketToast implements View.OnTouchListener {
         //WindowManager:窗口管理器，添加，删除，修改窗口
         //window：是android中最顶层的界面元素。在android看不见的一个框，将view放入到window里面才能在屏幕上进行显示（activity，dialog，toast都是通过窗口来显示的）
         mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
         //给窗口设置一些属性(布局参数)
         //在xml中部分属性是以layout_开头，这些属性不能由控件自身决定，必须与父控件进行“商量”才能有特定效果
         //在xml中部分属性不是以layout_开头，这些属性能由控件自身决定，不需要与父控件进行“商量”
@@ -90,14 +94,14 @@ public class RocketToast implements View.OnTouchListener {
         //触摸事件一次按下n次移动一次抬起即可
 //        System.out.println("onTouch...");
         int action = event.getAction();
-        System.out.println("action:" + action);
+//        System.out.println("action:" + action);
         switch (action) {
             case MotionEvent.ACTION_DOWN://手指按下
                 //1.记录起始点
                 startX = (int) event.getRawX();//在屏幕上的最小单位，像素点
                 startY = (int) event.getRawY();
 
-                // 在底部显示出提示框
+                //在底部显示出提示框
                 showTipView();
                 break;
             case MotionEvent.ACTION_MOVE://手指移动
@@ -118,11 +122,30 @@ public class RocketToast implements View.OnTouchListener {
                 // 手指移动时，让提示框进行闪烁动画
                 startTipAnimation();
                 // 实时获取火箭与提示框的位置关系，如果火箭进入提示框，展示发射状态
+                mView.getLocationOnScreen(rocketLocation);//赋值函数
+//                System.out.println("火箭的x的值：" + rocketLocation[0] + "火箭的y的值：" + rocketLocation[1]);
+                mTipView.getLocationOnScreen(tipLocation);// 赋值函数
 
+                int rocketX = rocketLocation[0];
+                int rocketY = rocketLocation[1];
+                int tipViewX = tipLocation[0];
+                int tipViewY = tipLocation[1];
+
+                mShouldSend = false;
+
+                if (rocketY > (tipViewY - mView.getHeight() / 2) && rocketX > tipViewX && (rocketX + mView.getWidth()) < (tipViewX + mTipView.getWidth())) {
+//                    System.out.println("xy轴满足条件");
+                    mShouldSend = true;
+                    //提示框进入发射状态
+                    stopTipViewAnimation();
+                }
                 break;
             case MotionEvent.ACTION_UP://手指抬起
                 // 如果手指松开时，时发射状态，则执行发射动画
-
+                if(mShouldSend){
+                    //发射动画
+                    sendRocket();
+                }
                 // 手指抬起时，隐藏火箭
                 hideTipView();
                 break;
@@ -137,13 +160,14 @@ public class RocketToast implements View.OnTouchListener {
         mTipView = new ImageView(mContext);
         mTipView.setImageResource(R.mipmap.desktop_bg_tips_1);
 
-
         //创建出一个窗口，使用mParams设置该窗口的一些属性，将mView放入窗口再进行显示
         mWM.addView(mTipView, mTipParams);
     }
 
     private void startTipAnimation() {
-
+        mTipView.setBackgroundResource(R.drawable.tipview);
+        AnimationDrawable rocketAnimation = (AnimationDrawable) mTipView.getBackground();
+        rocketAnimation.start();
     }
 
     //与火箭隐藏一致
@@ -157,5 +181,13 @@ public class RocketToast implements View.OnTouchListener {
             }
             mTipView = null;
         }
+    }
+
+    private void stopTipViewAnimation() {
+
+    }
+
+    private void sendRocket() {
+
     }
 }

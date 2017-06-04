@@ -7,7 +7,4 @@
     <item
         android:drawable="@mipmap/desktop_bg_tips_2"
         android:duration="100"/>
-    <item
-        android:drawable="@mipmap/desktop_bg_tips_3"
-        android:duration="100"/>
 </animation-list>
