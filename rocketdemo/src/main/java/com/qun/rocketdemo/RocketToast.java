@@ -3,6 +3,7 @@ package com.qun.rocketdemo;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,9 +18,11 @@ public class RocketToast implements View.OnTouchListener {
     WindowManager mWM;
     View mView;
     Context mContext;
-    private final WindowManager.LayoutParams mParams;
+    private WindowManager.LayoutParams mParams;//火箭的布局参数
+    private WindowManager.LayoutParams mTipParams;//提示框的布局参数
     private int startX;
     private int startY;
+    private ImageView mTipView;
 
     public RocketToast(Context context) {
         super();
@@ -42,6 +45,19 @@ public class RocketToast implements View.OnTouchListener {
         //如果不设置FLAG_NOT_FOCUSABLE，会抢占其他窗口的焦点，点击操作就失效
         mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 //                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+
+        mParams.gravity = Gravity.LEFT | Gravity.TOP;// 设置火箭在左上角
+
+        // 创建提示框的布局参数对象
+        mTipParams = new WindowManager.LayoutParams();
+        mTipParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        mTipParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        mTipParams.format = PixelFormat.TRANSLUCENT;// 以像素为单位显示界面
+        mTipParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+        mTipParams.setTitle("Toast");
+        mTipParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+
+        mTipParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;// 设置提示框在底部，水平居中
     }
 
     // 显示
@@ -80,6 +96,9 @@ public class RocketToast implements View.OnTouchListener {
                 //1.记录起始点
                 startX = (int) event.getRawX();//在屏幕上的最小单位，像素点
                 startY = (int) event.getRawY();
+
+                // 在底部显示出提示框
+                showTipView();
                 break;
             case MotionEvent.ACTION_MOVE://手指移动
                 //2.记录移动后结束点
@@ -95,12 +114,48 @@ public class RocketToast implements View.OnTouchListener {
                 //5.初始化起始点
                 startX = endX;
                 startY = endY;
+
+                // 手指移动时，让提示框进行闪烁动画
+                startTipAnimation();
+                // 实时获取火箭与提示框的位置关系，如果火箭进入提示框，展示发射状态
+
                 break;
             case MotionEvent.ACTION_UP://手指抬起
+                // 如果手指松开时，时发射状态，则执行发射动画
+
+                // 手指抬起时，隐藏火箭
+                hideTipView();
                 break;
             default:
                 break;
         }
         return true;//由我们自己处理触摸事件
+    }
+
+    // 与显示火箭功能一致
+    private void showTipView() {
+        mTipView = new ImageView(mContext);
+        mTipView.setImageResource(R.mipmap.desktop_bg_tips_1);
+
+
+        //创建出一个窗口，使用mParams设置该窗口的一些属性，将mView放入窗口再进行显示
+        mWM.addView(mTipView, mTipParams);
+    }
+
+    private void startTipAnimation() {
+
+    }
+
+    //与火箭隐藏一致
+    private void hideTipView() {
+        if (mTipView != null) {
+            // note: checking parent() just to make sure the view has
+            // been added...  i have seen cases where we get here when
+            // the view isn't yet added, so let's try not to crash.
+            if (mTipView.getParent() != null) {
+                mWM.removeView(mTipView);
+            }
+            mTipView = null;
+        }
     }
 }
