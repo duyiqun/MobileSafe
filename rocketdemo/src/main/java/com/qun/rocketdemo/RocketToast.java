@@ -1,5 +1,7 @@
 package com.qun.rocketdemo;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
@@ -142,7 +144,7 @@ public class RocketToast implements View.OnTouchListener {
                 break;
             case MotionEvent.ACTION_UP://手指抬起
                 // 如果手指松开时，时发射状态，则执行发射动画
-                if(mShouldSend){
+                if (mShouldSend) {
                     //发射动画
                     sendRocket();
                 }
@@ -158,7 +160,7 @@ public class RocketToast implements View.OnTouchListener {
     // 与显示火箭功能一致
     private void showTipView() {
         mTipView = new ImageView(mContext);
-        mTipView.setImageResource(R.mipmap.desktop_bg_tips_1);
+        mTipView.setBackgroundResource(R.mipmap.desktop_bg_tips_1);
 
         //创建出一个窗口，使用mParams设置该窗口的一些属性，将mView放入窗口再进行显示
         mWM.addView(mTipView, mTipParams);
@@ -184,10 +186,52 @@ public class RocketToast implements View.OnTouchListener {
     }
 
     private void stopTipViewAnimation() {
-
+        AnimationDrawable drawable = (AnimationDrawable) mTipView.getBackground();
+        drawable.stop();
+        mTipView.clearAnimation();
+        mTipView.setBackgroundResource(R.mipmap.desktop_bg_tips_3);
     }
 
     private void sendRocket() {
+        //值动画：既没有动，也没有画，模拟值的变化
+        ValueAnimator va = ValueAnimator.ofInt(mParams.y, 0);
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer animatedValue = (Integer) animation.getAnimatedValue();
+                //值在不断的变化，让火箭的位置动起来
+                mParams.y = animatedValue;
+                mWM.updateViewLayout(mView, mParams);
+//                System.out.println("animatedValue:" + animatedValue);
+            }
+        });
+        va.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                //值动画开始时，火箭居中
+                int widthPixels = mContext.getResources().getDisplayMetrics().widthPixels;//屏幕的宽
+                mParams.x = widthPixels / 2 - mView.getWidth() / 2;
+                mWM.updateViewLayout(mView, mParams);
+            }
 
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //值动画结束后，让火箭回到左上角
+                mParams.x = 0;
+                mWM.updateViewLayout(mView, mParams);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        va.setDuration(800);
+        va.start();
     }
 }
