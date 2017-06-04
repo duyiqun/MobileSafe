@@ -30,7 +30,12 @@ public class LocationToast implements View.OnTouchListener {
         //WindowManager:窗口管理器，添加，删除，修改窗口
         //window：是android中最顶层的界面元素。在android看不见的一个框，将view放入到window里面才能在屏幕上进行显示（activity，dialog，toast都是通过窗口来显示的）
         mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        //布局参数，设置窗口的一些属性
+        //给窗口设置一些属性(布局参数)
+        //在xml中部分属性是以layout_开头，这些属性不能由控件自身决定，必须与父控件进行“商量”才能有特定效果
+        //在xml中部分属性不是以layout_开头，这些属性能由控件自身决定，不需要与父控件进行“商量”
+        //在xml中部分属性不是以layout_开头,在代码中可以通过控件自身的set方法来实现设置属性
+        //在xml中部分属性是以layout_开头,在代码中必须通过布局参数layoutparams来设置属性
+        //在使用布局参数时，注意必须使用当前控件的父控件类型的布局参数
         mParams = new WindowManager.LayoutParams();
         mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
