@@ -22,7 +22,6 @@ public class LocationToast implements View.OnTouchListener {
     private final WindowManager.LayoutParams mParams;
     private int startX;
     private int startY;
-    private TextView mTvToastTitle;
 
     public LocationToast(Context context) {
         super();
@@ -50,7 +49,7 @@ public class LocationToast implements View.OnTouchListener {
     // 显示
     public void showLocationToast(String location) {
         mView = View.inflate(mContext, R.layout.view_location_toast, null);
-        mTvToastTitle = (TextView) mView.findViewById(R.id.tv_toast_title);
+        TextView mTvToastTitle = (TextView) mView.findViewById(R.id.tv_toast_title);
         mTvToastTitle.setText(location);
         mTvToastTitle.setTextColor(Color.RED);
         mView.setOnTouchListener(this);
