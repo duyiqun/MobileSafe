@@ -3,6 +3,7 @@ package com.qun.rocketdemo;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.Gravity;
@@ -147,6 +148,10 @@ public class RocketToast implements View.OnTouchListener {
                 if (mShouldSend) {
                     //发射动画
                     sendRocket();
+                    //冒烟动画
+                    Intent intent = new Intent(mContext, SmokeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
                 }
                 // 手指抬起时，隐藏火箭
                 hideTipView();
@@ -185,6 +190,7 @@ public class RocketToast implements View.OnTouchListener {
         }
     }
 
+    //提示框进入发射状态
     private void stopTipViewAnimation() {
         AnimationDrawable drawable = (AnimationDrawable) mTipView.getBackground();
         drawable.stop();

@@ -3,7 +3,7 @@
           package="com.qun.rocketdemo">
 
     <!-- 添加系统级别窗口的权限 -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:allowBackup="true"
@@ -19,8 +19,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <service android:name=".RocketService">
         </service>
+
+        <activity
+            android:name=".SmokeActivity"
+            android:theme="@style/NoTitleTranslucentTheme">
+        </activity>
     </application>
 
 </manifest>
