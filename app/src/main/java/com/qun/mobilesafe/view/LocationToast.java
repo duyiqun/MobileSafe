@@ -3,19 +3,26 @@ package com.qun.mobilesafe.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import com.qun.mobilesafe.R;
 
 /**
  * Created by Qun on 2017/6/4.
  */
 
-public class LocationToast {
+public class LocationToast implements View.OnTouchListener {
 
     WindowManager mWM;
-    TextView mView;
+    View mView;
     Context mContext;
     private final WindowManager.LayoutParams mParams;
+    private int startX;
+    private int startY;
+    private TextView mTvToastTitle;
 
     public LocationToast(Context context) {
         super();
@@ -28,16 +35,21 @@ public class LocationToast {
         mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         mParams.format = PixelFormat.TRANSLUCENT;//以像素为单位显示界面
-        mParams.type = WindowManager.LayoutParams.TYPE_TOAST;//设置窗口的类型
+        mParams.type = WindowManager.LayoutParams.TYPE_PRIORITY_PHONE;//设置窗口的类型(如果是toast类型的窗口默认没有点击事件与触摸操作)
         mParams.setTitle("Toast");
-        mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        //如果不设置FLAG_NOT_FOCUSABLE，会抢占其他窗口的焦点，点击操作就失效
+        mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+//                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
     }
 
     // 显示
     public void showLocationToast(String location) {
-        mView = new TextView(mContext.getApplicationContext());
-        mView.setText(location);
-        mView.setTextColor(Color.RED);
+        mView = View.inflate(mContext, R.layout.view_location_toast, null);
+        mTvToastTitle = (TextView) mView.findViewById(R.id.tv_toast_title);
+        mTvToastTitle.setText(location);
+        mTvToastTitle.setTextColor(Color.RED);
+        mView.setOnTouchListener(this);
+
         //创建出一个窗口，使用mParams设置该窗口的一些属性，将mView放入窗口再进行显示
         mWM.addView(mView, mParams);
     }
@@ -52,5 +64,41 @@ public class LocationToast {
             }
             mView = null;
         }
+    }
+
+    //手指触摸view的时候，实时调用该方法
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        //触摸事件一次按下n次移动一次抬起即可
+//        System.out.println("onTouch...");
+        int action = event.getAction();
+        System.out.println("action:" + action);
+        switch (action) {
+            case MotionEvent.ACTION_DOWN://手指按下
+                //1.记录起始点
+                startX = (int) event.getRawX();//在屏幕上的最小单位，像素点
+                startY = (int) event.getRawY();
+                break;
+            case MotionEvent.ACTION_MOVE://手指移动
+                //2.记录移动后结束点
+                int endX = (int) event.getRawX();
+                int endY = (int) event.getRawY();
+                //3.计算出间距
+                int diffX = endX - startX;
+                int diffY = endY - startY;
+                //4.让窗口动起来
+                mParams.x = mParams.x + diffX;
+                mParams.y = mParams.y + diffY;
+                mWM.updateViewLayout(mView, mParams);
+                //5.初始化起始点
+                startX = endX;
+                startY = endY;
+                break;
+            case MotionEvent.ACTION_UP://手指抬起
+                break;
+            default:
+                break;
+        }
+        return true;//由我们自己处理触摸事件
     }
 }
