@@ -10,6 +10,7 @@ import com.qun.mobilesafe.service.LocationService;
 import com.qun.mobilesafe.utils.Contants;
 import com.qun.mobilesafe.utils.ServiceStateUtil;
 import com.qun.mobilesafe.utils.SpUtil;
+import com.qun.mobilesafe.view.LocationDialog;
 import com.qun.mobilesafe.view.SettingItemView;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -77,7 +78,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 break;
             case R.id.siv_location_style://风格设置
-                mSivLocationStyle.toggle();
+                //弹出对话框
+//                Dialog dialog = new Dialog(SettingActivity.this);
+//                dialog.setTitle("xxx");
+//                dialog.show();
+
+                LocationDialog locationDialog = new LocationDialog(SettingActivity.this);
+                locationDialog.show();
                 break;
             default:
                 break;

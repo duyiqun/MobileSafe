@@ -26,4 +26,10 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <!-- 归属地对话框样式主题 -->
+    <style name="style_locationdialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
 </resources>

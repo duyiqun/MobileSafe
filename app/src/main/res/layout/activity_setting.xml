@@ -36,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         qun:backgroundType="last"
+        qun:enable="false"
         qun:title="归属地风格显示设置">
 
     </com.qun.mobilesafe.view.SettingItemView>
