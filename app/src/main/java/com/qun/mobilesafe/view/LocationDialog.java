@@ -31,7 +31,7 @@ public class LocationDialog extends Dialog implements AdapterView.OnItemClickLis
     private String[] mTitles = new String[]{"半透明", "活力橙", "卫士蓝", "金属灰", "苹果绿"};
     private int[] mImages = new int[]{R.drawable.shape_location_normal, R.drawable.shape_location_orange, R.drawable.shape_location_blue, R.drawable.shape_location_gray, R.drawable.shape_location_green};
     private ListView mLvLocaitonDialog;
-    private LocationDialogAdapter adapter;
+    private LocationDialogAdapter mAdapter;
     private List<LocationBean> mData;
 
     public LocationDialog(@NonNull Context context) {
@@ -63,8 +63,8 @@ public class LocationDialog extends Dialog implements AdapterView.OnItemClickLis
         mLvLocaitonDialog = (ListView) findViewById(R.id.lv_locaiton_dialog);
         mLvLocaitonDialog.setOnItemClickListener(this);
         initData();
-        adapter = new LocationDialogAdapter(getContext(), mData);
-        mLvLocaitonDialog.setAdapter(adapter);
+        mAdapter = new LocationDialogAdapter(getContext(), mData);
+        mLvLocaitonDialog.setAdapter(mAdapter);
     }
 
     private void initData() {
@@ -83,6 +83,6 @@ public class LocationDialog extends Dialog implements AdapterView.OnItemClickLis
         SpUtil.saveInt(getContext(), mImages[position], Contants.KEY_LOCATION_IMAGEID);
         //在一个界面中适配器只会被创建一次，并且setAdapter也只会被调用一次，如果要刷新则修改数据，并调用刷新方法notifyDataSetChanged即可
 //        mLvLocaitonDialog.setAdapter(adapter);
-        adapter.notifyDataSetChanged();//让适配器根据最新的数据重新显示，不会修改当前lsitview的索引状态
+        mAdapter.notifyDataSetChanged();//让适配器根据最新的数据重新显示，不会修改当前lsitview的索引状态
     }
 }

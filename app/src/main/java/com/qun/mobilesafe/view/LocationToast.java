@@ -9,6 +9,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
+import com.qun.mobilesafe.utils.Contants;
+import com.qun.mobilesafe.utils.SpUtil;
 
 /**
  * Created by Qun on 2017/6/4.
@@ -54,6 +56,9 @@ public class LocationToast implements View.OnTouchListener {
         mTvToastTitle.setTextColor(Color.RED);
         mView.setOnTouchListener(this);
 
+        //在归属地显示之前，动态将用户选择的颜色设置为背景即可
+        int imageId = SpUtil.getInt(mContext, Contants.KEY_LOCATION_IMAGEID, R.drawable.shape_location_normal);
+        mView.setBackgroundResource(imageId);
         //创建出一个窗口，使用mParams设置该窗口的一些属性，将mView放入窗口再进行显示
         mWM.addView(mView, mParams);
     }
