@@ -1,8 +1,8 @@
 package com.qun.mobilesafe.act;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.qun.mobilesafe.R;
@@ -38,10 +38,10 @@ public class CommonToolActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.common_tool_siv_location://归属地
-                startActivity(new Intent(CommonToolActivity.this,LocationActivity.class));
+                startActivity(new Intent(CommonToolActivity.this, LocationActivity.class));
                 break;
-            case R.id.common_tool_siv_number:
-
+            case R.id.common_tool_siv_number://常用号码
+                startActivity(new Intent(CommonToolActivity.this, CommonNumberActivity.class));
                 break;
             case R.id.common_tool_siv_applock:
 

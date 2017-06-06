@@ -72,6 +72,9 @@ public class SplashActivity extends AppCompatActivity {
 
         //数据初始化操作（数据库的复制与sp的创建）
         copyCommonDb();
+
+        //复制常用号码数据库
+        copyCommonNumDb();
     }
 
     private void initVersionName() {
@@ -305,6 +308,36 @@ public class SplashActivity extends AppCompatActivity {
                     GzipUtil.unZip(inputStream, targetFile);
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void copyCommonNumDb() {
+        final File dbFile = new File(getFilesDir(), "commonnum.db");
+        if (dbFile.exists()) {
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AssetManager assetManager = getAssets();
+                InputStream inputStream = null;
+                FileOutputStream fos = null;
+                try {
+                    inputStream = assetManager.open("commonnum.db");
+                    fos = new FileOutputStream(dbFile);
+                    int len = -1;
+                    byte[] buffer = new byte[1024];
+                    while ((len = inputStream.read(buffer)) != -1) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.flush();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } finally {
+                    closeIOs(inputStream, fos);
                 }
             }
         }).start();
