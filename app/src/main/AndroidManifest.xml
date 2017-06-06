@@ -53,6 +53,10 @@
             android:name=".act.CommonNumberActivity"
             android:theme="@style/activity_style">
         </activity>
+        <activity
+            android:name=".act.ProcessManagerActivity"
+            android:theme="@style/activity_style">
+        </activity>
     </application>
 
 </manifest>
