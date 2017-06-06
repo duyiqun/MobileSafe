@@ -24,4 +24,16 @@
 
     </RelativeLayout>
 
+    <com.qun.mobilesafe.view.ProgressDescView
+        android:id="@+id/pdv_process_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.qun.mobilesafe.view.ProgressDescView>
+
+    <com.qun.mobilesafe.view.ProgressDescView
+        android:id="@+id/pdv_process_memory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.qun.mobilesafe.view.ProgressDescView>
+
 </LinearLayout>
