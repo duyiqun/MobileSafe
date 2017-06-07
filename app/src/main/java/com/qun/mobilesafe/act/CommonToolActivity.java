@@ -49,7 +49,6 @@ public class CommonToolActivity extends AppCompatActivity implements View.OnClic
             case R.id.common_tool_siv_dog:
 
                 break;
-
             default:
                 break;
         }

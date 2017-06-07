@@ -17,7 +17,7 @@ import com.qun.mobilesafe.db.CommonNumberDb;
 public class CommonNumberActivity extends AppCompatActivity {
 
     private ExpandableListView mElv;
-    private int prevousExpandedPosition = -1;//记录前一个被展开的组的索引
+    private int previousExpandedPosition = -1;//记录前一个被展开的组的索引
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +39,8 @@ public class CommonNumberActivity extends AppCompatActivity {
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
                 //当点击时，当前展开的索引不是-1并且，我们点击的组的索引与记录下来的前一个展开的索引不同时，将前一个展开的组给关闭
-                if (prevousExpandedPosition != -1 && prevousExpandedPosition != groupPosition) {
-                    mElv.collapseGroup(prevousExpandedPosition);
+                if (previousExpandedPosition != -1 && previousExpandedPosition != groupPosition) {
+                    mElv.collapseGroup(previousExpandedPosition);
                 }
 
                 //根据当前组的状态，将组的打开与关闭进行逻辑操作
@@ -48,7 +48,7 @@ public class CommonNumberActivity extends AppCompatActivity {
                     mElv.collapseGroup(groupPosition);//关闭对应的组
                 } else {//当前是关闭状态
                     mElv.expandGroup(groupPosition);//展开对应的组
-                    prevousExpandedPosition = groupPosition;
+                    previousExpandedPosition = groupPosition;
                 }
                 mElv.setSelection(groupPosition);//能够将点击的组的条目直接显示到第一个可见条目上(可以实现回到顶部的效果)
 
