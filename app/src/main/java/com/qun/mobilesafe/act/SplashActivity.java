@@ -334,7 +334,6 @@ public class SplashActivity extends AppCompatActivity {
                     }
                     fos.flush();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } finally {
                     closeIOs(inputStream, fos);

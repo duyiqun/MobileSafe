@@ -19,7 +19,6 @@ public class PackageUtil {
             PackageInfo packageInfo = manager.getPackageInfo(packageName, 0);
             versionName = packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return versionName;
@@ -34,7 +33,6 @@ public class PackageUtil {
             PackageInfo packageInfo = manager.getPackageInfo(packageName, 0);
             versionCode = packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return versionCode;

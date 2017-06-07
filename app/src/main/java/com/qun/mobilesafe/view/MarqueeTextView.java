@@ -31,7 +31,6 @@ public class MarqueeTextView extends android.support.v7.widget.AppCompatTextView
     @Override
     @ViewDebug.ExportedProperty(category = "focus")
     public boolean isFocused() {
-        // TODO Auto-generated method stub
         return true;
     }
 
