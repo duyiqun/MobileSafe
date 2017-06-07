@@ -1,9 +1,13 @@
 package com.qun.mobilesafe.act;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Formatter;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
 import com.qun.mobilesafe.adapter.ProcessAdapter;
@@ -19,6 +23,12 @@ public class ProcessManagerActivity extends AppCompatActivity {
     private ProgressDescView mPdvProcessNum;
     private ProgressDescView mPdvProcessMemory;
     private ListView mLvProcessManager;
+    private List<ProcessInfoBean> mData;
+    private View mLlLoading;// 加载进度圈
+    private TextView mTvTitle;
+    private LinearLayout mLlProcessTitle;
+    private List<ProcessInfoBean> userData = new ArrayList<>();// 用户进程数据
+    private List<ProcessInfoBean> systemData = new ArrayList<>();// 系统进程数据
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +43,35 @@ public class ProcessManagerActivity extends AppCompatActivity {
         mPdvProcessNum = (ProgressDescView) findViewById(R.id.pdv_process_num);
         mPdvProcessMemory = (ProgressDescView) findViewById(R.id.pdv_process_memory);
         mLvProcessManager = (ListView) findViewById(R.id.lv_process_manager);
-        List<ProcessInfoBean> data = ProcessInfoProvider.getRunningProcessInfos(ProcessManagerActivity.this);
-        ProcessAdapter processAdapter = new ProcessAdapter(ProcessManagerActivity.this, data);
-        mLvProcessManager.setAdapter(processAdapter);
+
+        mLlLoading = findViewById(R.id.ll_loading);
+        //获取标题型的布局的文本控件
+        mTvTitle = (TextView) findViewById(R.id.tv_title);
+        mLlProcessTitle = (LinearLayout) findViewById(R.id.ll_process_title);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SystemClock.sleep(2000);
+                List<ProcessInfoBean> runningProcessInfos = ProcessInfoProvider.getRunningProcessInfos(getApplicationContext());
+                for (ProcessInfoBean processInfoBean : runningProcessInfos) {
+                    if (processInfoBean.isSystem) {
+                        systemData.add(processInfoBean);
+                    } else {
+                        userData.add(processInfoBean);
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLlLoading.setVisibility(View.INVISIBLE);
+                        ProcessAdapter processAdapter = new ProcessAdapter(ProcessManagerActivity.this, mData);
+                        mLvProcessManager.setAdapter(processAdapter);
+                        mLlProcessTitle.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        }).start();
     }
 
     private void initData() {
