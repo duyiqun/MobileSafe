@@ -3,15 +3,22 @@ package com.qun.mobilesafe.act;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Formatter;
+import android.widget.ListView;
 
 import com.qun.mobilesafe.R;
+import com.qun.mobilesafe.adapter.ProcessAdapter;
+import com.qun.mobilesafe.bean.ProcessInfoBean;
 import com.qun.mobilesafe.engine.ProcessInfoProvider;
 import com.qun.mobilesafe.view.ProgressDescView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProcessManagerActivity extends AppCompatActivity {
 
     private ProgressDescView mPdvProcessNum;
     private ProgressDescView mPdvProcessMemory;
+    private ListView mLvProcessManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +32,10 @@ public class ProcessManagerActivity extends AppCompatActivity {
     private void initView() {
         mPdvProcessNum = (ProgressDescView) findViewById(R.id.pdv_process_num);
         mPdvProcessMemory = (ProgressDescView) findViewById(R.id.pdv_process_memory);
+        mLvProcessManager = (ListView) findViewById(R.id.lv_process_manager);
+        List<ProcessInfoBean> data = new ArrayList<>();
+        ProcessAdapter processAdapter = new ProcessAdapter(ProcessManagerActivity.this, data);
+        mLvProcessManager.setAdapter(processAdapter);
     }
 
     private void initData() {

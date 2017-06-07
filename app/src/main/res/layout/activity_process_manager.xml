@@ -36,4 +36,10 @@
         android:layout_height="wrap_content">
     </com.qun.mobilesafe.view.ProgressDescView>
 
+    <ListView
+        android:id="@+id/lv_process_manager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </ListView>
+
 </LinearLayout>
