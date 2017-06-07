@@ -33,7 +33,7 @@ public class ProcessManagerActivity extends AppCompatActivity {
         mPdvProcessNum = (ProgressDescView) findViewById(R.id.pdv_process_num);
         mPdvProcessMemory = (ProgressDescView) findViewById(R.id.pdv_process_memory);
         mLvProcessManager = (ListView) findViewById(R.id.lv_process_manager);
-        List<ProcessInfoBean> data = new ArrayList<>();
+        List<ProcessInfoBean> data = ProcessInfoProvider.getRunningProcessInfos(ProcessManagerActivity.this);
         ProcessAdapter processAdapter = new ProcessAdapter(ProcessManagerActivity.this, data);
         mLvProcessManager.setAdapter(processAdapter);
     }

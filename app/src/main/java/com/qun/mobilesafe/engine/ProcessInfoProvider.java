@@ -9,13 +9,18 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ServiceInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+
+import com.qun.mobilesafe.R;
+import com.qun.mobilesafe.bean.ProcessInfoBean;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -109,5 +114,47 @@ public class ProcessInfoProvider {
             }
         }
         return totalMem;
+    }
+
+    // 返回正在运行的进程数据
+    public static List<ProcessInfoBean> getRunningProcessInfos(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = activityManager.getRunningAppProcesses();
+        PackageManager packageManager = context.getPackageManager();
+        List<ProcessInfoBean> data = new ArrayList<>();
+        for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : runningAppProcesses) {
+            String packageName = runningAppProcessInfo.processName;// 包名
+            ProcessInfoBean bean = new ProcessInfoBean();
+            bean.appPackageName = packageName;
+            try {
+                PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+                ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+                // int iconId = applicationInfo.icon;//id是其他应用的图片id，对于本应用没有作用
+                // int labelRes = applicationInfo.labelRes;//labelRes其他应用的string id，对于本应用没有作用
+                int flags = applicationInfo.flags;
+                if ((flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {//说明应用携带系统标记
+                    bean.isSystem = true;
+                } else {
+                    bean.isSystem = false;
+                }
+                Drawable appIcon = applicationInfo.loadIcon(packageManager);//正在运行的应用的图标图片对象
+                String appName = applicationInfo.loadLabel(packageManager).toString();
+                bean.appIcon = appIcon;
+                bean.appName = appName;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                //部分系统进程图标与应用名没有，给默认
+                bean.appIcon = context.getResources().getDrawable(R.mipmap.ic_launcher);
+                bean.appName = packageName;
+                bean.isSystem = true;
+            }
+            //获取每个进程的内存占用
+            android.os.Debug.MemoryInfo[] processMemoryInfo = activityManager.getProcessMemoryInfo(new int[]{runningAppProcessInfo.pid});
+            android.os.Debug.MemoryInfo memoryInfo = processMemoryInfo[0];
+            int totalPss = memoryInfo.getTotalPss();//一个应用的内存：C进程+虚拟机+应用层的内存占用
+            bean.appMemory = totalPss * 1024;
+            data.add(bean);
+        }
+        return data;
     }
 }
