@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Formatter;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -72,6 +73,32 @@ public class ProcessManagerActivity extends AppCompatActivity {
                 });
             }
         }).start();
+
+        //给listview设置滚动监听
+        mLvProcessManager.setOnScrollListener(new AbsListView.OnScrollListener() {
+            //当listview的滚动状态改变时，调用该方法
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            /**
+             * 当listview在滚动时，实时调用该方法
+             * 参数一 view listview自身
+             * 参数二 firstVisibleItem 第一个可见条目的索引
+             * 参数三 visibleItemCount 可见条目数量
+             * 参数四 totalItemCount 全部条目数量
+             */
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                //如果第一个可见条目的索引小于第二个标题的索引时，展示用户进程个数，否则是系统进程个数
+                if (firstVisibleItem < userData.size() + 1) {
+                    mTvTitle.setText("用户进程(" + userData.size() + ")个");
+                } else {
+                    mTvTitle.setText("系统进程(" + systemData.size() + ")个");
+                }
+            }
+        });
     }
 
     private void initData() {
