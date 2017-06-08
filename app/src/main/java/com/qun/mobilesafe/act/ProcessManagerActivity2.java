@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
@@ -24,17 +24,18 @@ import java.util.List;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class ProcessManagerActivity2 extends AppCompatActivity {
+public class ProcessManagerActivity2 extends AppCompatActivity implements View.OnClickListener {
 
     private ProgressDescView mPdvProcessNum;
     private ProgressDescView mPdvProcessMemory;
     private StickyListHeadersListView mSlhLvProcessManager;
     private List<ProcessInfoBean> mData = new ArrayList<>();
     private View mLlLoading;// 加载进度圈
-    private TextView mTvTitle;
-    private LinearLayout mLlProcessTitle;
+    private Button mBtnProcessAll;
+    private Button mBtnProcessReverse;
     private List<ProcessInfoBean> userData = new ArrayList<>();// 用户进程数据
     private List<ProcessInfoBean> systemData = new ArrayList<>();// 系统进程数据
+    private ProcessAdapter2 mProcessAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +52,11 @@ public class ProcessManagerActivity2 extends AppCompatActivity {
         mSlhLvProcessManager = (StickyListHeadersListView) findViewById(R.id.slhlv_process_manager);
 
         mLlLoading = findViewById(R.id.ll_loading);
-        //获取标题型的布局的文本控件
-        mTvTitle = (TextView) findViewById(R.id.tv_title);
-        mLlProcessTitle = (LinearLayout) findViewById(R.id.ll_process_title);
+        //获取全选反选按钮
+        mBtnProcessAll = (Button) findViewById(R.id.btn_process_all);
+        mBtnProcessReverse = (Button) findViewById(R.id.btn_process_reverse);
+        mBtnProcessAll.setOnClickListener(this);
+        mBtnProcessReverse.setOnClickListener(this);
 
         new Thread(new Runnable() {
             @Override
@@ -77,38 +80,12 @@ public class ProcessManagerActivity2 extends AppCompatActivity {
 //                        mLvProcessManager.setAdapter(processAdapter);
 //                        mLlProcessTitle.setVisibility(View.VISIBLE);
 
-                        ProcessAdapter2 processAdapter = new ProcessAdapter2();
-                        mSlhLvProcessManager.setAdapter(processAdapter);
+                        mProcessAdapter = new ProcessAdapter2();
+                        mSlhLvProcessManager.setAdapter(mProcessAdapter);
                     }
                 });
             }
         }).start();
-
-        //给listview设置滚动监听
-        mSlhLvProcessManager.setOnScrollListener(new AbsListView.OnScrollListener() {
-            //当listview的滚动状态改变时，调用该方法
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            /**
-             * 当listview在滚动时，实时调用该方法
-             * 参数一 view listview自身
-             * 参数二 firstVisibleItem 第一个可见条目的索引
-             * 参数三 visibleItemCount 可见条目数量
-             * 参数四 totalItemCount 全部条目数量
-             */
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                //如果第一个可见条目的索引小于第二个标题的索引时，展示用户进程个数，否则是系统进程个数
-                if (firstVisibleItem < userData.size() + 1) {
-                    mTvTitle.setText("用户进程(" + userData.size() + ")个");
-                } else {
-                    mTvTitle.setText("系统进程(" + systemData.size() + ")个");
-                }
-            }
-        });
     }
 
     private void initData() {
@@ -137,6 +114,47 @@ public class ProcessManagerActivity2 extends AppCompatActivity {
         mPdvProcessMemory.setLeftText("占用内存：" + Formatter.formatFileSize(getApplicationContext(), usedMemory));
         mPdvProcessMemory.setRightText("可用内存：" + Formatter.formatFileSize(getApplicationContext(), availMemory));
         mPdvProcessMemory.setProgress((int) (usedMemory * 100f / totalMemory + 0.5f));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_process_all:// 全选
+                // 遍历所有的数据，将对应列表的javabean的字段设置为选中并刷新即可
+                for (ProcessInfoBean bean : mData) {
+                    bean.isSelected = true;
+                }
+                mProcessAdapter.notifyDataSetChanged();
+                break;
+            case R.id.btn_process_reverse:// 反选
+                // 遍历所有的数据，将对应列表的javabean的字段取反并刷新即可
+                for (ProcessInfoBean bean : mData) {
+                    bean.isSelected = !bean.isSelected;
+                }
+                mProcessAdapter.notifyDataSetChanged();
+                break;
+//            case R.id.ib_process_clean:// 清理
+////                //遍历所有的数据，如果是选中的则，清理掉进程，并从列表中删除
+////                for (ProcessInfoBean bean : mData) {
+////                    if (bean.isSelected) {
+////                        ProcessInfoProvider.cleanProcess(getApplicationContext(), bean.appPackageName);
+////                        mData.remove(bean);
+////                    }
+////                }
+//
+//                ListIterator<ProcessInfoBean> listIterator = mData.listIterator();
+//                while (listIterator.hasNext()) {
+//                    ProcessInfoBean processInfoBean = (ProcessInfoBean) listIterator.next();
+//                    if (processInfoBean.isSelected) {
+//                        ProcessInfoProvider.cleanProcess(getApplicationContext(), processInfoBean.appPackageName);
+//                        listIterator.remove();
+//                    }
+//                }
+//                mProcessAdapter.notifyDataSetChanged();
+//                break;
+            default:
+                break;
+        }
     }
 
     private class ProcessAdapter2 extends BaseAdapter implements StickyListHeadersAdapter {
@@ -170,8 +188,23 @@ public class ProcessManagerActivity2 extends AppCompatActivity {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            ProcessInfoBean processInfoBean = getItem(position);
+            final ProcessInfoBean processInfoBean = getItem(position);
             holder.ivIcon.setImageDrawable(processInfoBean.appIcon);
+            // 根据条目javabean动态设置选中状态
+//            if (processInfoBean.isSelected) {
+//                holder.cb.setChecked(true);
+//            } else {
+//                holder.cb.setChecked(false);
+//            }
+            holder.cb.setChecked(processInfoBean.isSelected);
+            // 勾选功能，记录数据
+            holder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    processInfoBean.isSelected = isChecked;
+                }
+            });
             holder.tvName.setText(processInfoBean.appName);
             holder.tvMemory.setText(Formatter.formatFileSize(ProcessManagerActivity2.this, processInfoBean.appMemory));
             return convertView;
