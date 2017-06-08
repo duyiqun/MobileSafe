@@ -157,4 +157,10 @@ public class ProcessInfoProvider {
         }
         return data;
     }
+
+    //清理进程
+    public static void cleanProcess(Context context, String packageName) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.killBackgroundProcesses(packageName);
+    }
 }

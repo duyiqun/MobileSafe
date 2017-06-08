@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import com.qun.mobilesafe.view.ProgressDescView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -36,6 +38,7 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
     private List<ProcessInfoBean> userData = new ArrayList<>();// 用户进程数据
     private List<ProcessInfoBean> systemData = new ArrayList<>();// 系统进程数据
     private ProcessAdapter2 mProcessAdapter;
+    private ImageButton mIbProcessClean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +55,16 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
         mSlhLvProcessManager = (StickyListHeadersListView) findViewById(R.id.slhlv_process_manager);
 
         mLlLoading = findViewById(R.id.ll_loading);
+
         //获取全选反选按钮
         mBtnProcessAll = (Button) findViewById(R.id.btn_process_all);
         mBtnProcessReverse = (Button) findViewById(R.id.btn_process_reverse);
         mBtnProcessAll.setOnClickListener(this);
         mBtnProcessReverse.setOnClickListener(this);
+
+        // 清理按钮
+        mIbProcessClean = (ImageButton) findViewById(R.id.ib_process_clean);
+        mIbProcessClean.setOnClickListener(this);
 
         new Thread(new Runnable() {
             @Override
@@ -133,25 +141,26 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
                 }
                 mProcessAdapter.notifyDataSetChanged();
                 break;
-//            case R.id.ib_process_clean:// 清理
-////                //遍历所有的数据，如果是选中的则，清理掉进程，并从列表中删除
-////                for (ProcessInfoBean bean : mData) {
-////                    if (bean.isSelected) {
-////                        ProcessInfoProvider.cleanProcess(getApplicationContext(), bean.appPackageName);
-////                        mData.remove(bean);
-////                    }
-////                }
-//
-//                ListIterator<ProcessInfoBean> listIterator = mData.listIterator();
-//                while (listIterator.hasNext()) {
-//                    ProcessInfoBean processInfoBean = (ProcessInfoBean) listIterator.next();
-//                    if (processInfoBean.isSelected) {
-//                        ProcessInfoProvider.cleanProcess(getApplicationContext(), processInfoBean.appPackageName);
-//                        listIterator.remove();
+            case R.id.ib_process_clean:// 清理
+                //遍历所有的数据，如果是选中的则，清理掉进程，并从列表中删除
+                //增强for循环不能遍遍历遍删除，因此应该用迭代器
+//                for (ProcessInfoBean bean : mData) {
+//                    if (bean.isSelected) {
+//                        ProcessInfoProvider.cleanProcess(getApplicationContext(), bean.appPackageName);
+//                        mData.remove(bean);
 //                    }
 //                }
-//                mProcessAdapter.notifyDataSetChanged();
-//                break;
+
+                ListIterator<ProcessInfoBean> listIterator = mData.listIterator();
+                while (listIterator.hasNext()) {
+                    ProcessInfoBean processInfoBean = (ProcessInfoBean) listIterator.next();
+                    if (processInfoBean.isSelected) {
+                        ProcessInfoProvider.cleanProcess(getApplicationContext(), processInfoBean.appPackageName);
+                        listIterator.remove();
+                    }
+                }
+                mProcessAdapter.notifyDataSetChanged();
+                break;
             default:
                 break;
         }

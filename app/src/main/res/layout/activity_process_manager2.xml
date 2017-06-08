@@ -16,6 +16,7 @@
             android:text="进程管理"/>
 
         <ImageButton
+            android:id="@+id/ib_process_clean"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentRight="true"
