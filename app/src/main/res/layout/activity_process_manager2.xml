@@ -40,11 +40,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/lv_process_manager"
+        <!--<ListView-->
+            <!--android:id="@+id/lv_process_manager"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+        <!--</ListView>-->
+
+        <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+            android:id="@+id/slhlv_process_manager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </ListView>
+            android:layout_height="match_parent"/>
 
         <!-- include相当于将布局文件直接写入到当前位置,注意：使用include标签一样要将layout_开头的数据设置在 include标签内 -->
         <include

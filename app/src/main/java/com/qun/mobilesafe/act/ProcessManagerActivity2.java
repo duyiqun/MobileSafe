@@ -5,13 +5,15 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Formatter;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
-import com.qun.mobilesafe.adapter.ProcessAdapter;
 import com.qun.mobilesafe.bean.ProcessInfoBean;
 import com.qun.mobilesafe.engine.ProcessInfoProvider;
 import com.qun.mobilesafe.view.ProgressDescView;
@@ -19,12 +21,15 @@ import com.qun.mobilesafe.view.ProgressDescView;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+
 public class ProcessManagerActivity2 extends AppCompatActivity {
 
     private ProgressDescView mPdvProcessNum;
     private ProgressDescView mPdvProcessMemory;
-    private ListView mLvProcessManager;
-    private List<ProcessInfoBean> mData;
+    private StickyListHeadersListView mSlhLvProcessManager;
+    private List<ProcessInfoBean> mData = new ArrayList<>();
     private View mLlLoading;// 加载进度圈
     private TextView mTvTitle;
     private LinearLayout mLlProcessTitle;
@@ -43,7 +48,7 @@ public class ProcessManagerActivity2 extends AppCompatActivity {
     private void initView() {
         mPdvProcessNum = (ProgressDescView) findViewById(R.id.pdv_process_num);
         mPdvProcessMemory = (ProgressDescView) findViewById(R.id.pdv_process_memory);
-        mLvProcessManager = (ListView) findViewById(R.id.lv_process_manager);
+        mSlhLvProcessManager = (StickyListHeadersListView) findViewById(R.id.slhlv_process_manager);
 
         mLlLoading = findViewById(R.id.ll_loading);
         //获取标题型的布局的文本控件
@@ -62,20 +67,25 @@ public class ProcessManagerActivity2 extends AppCompatActivity {
                         userData.add(processInfoBean);
                     }
                 }
+                mData.addAll(userData);
+                mData.addAll(systemData);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mLlLoading.setVisibility(View.INVISIBLE);
-                        ProcessAdapter processAdapter = new ProcessAdapter(ProcessManagerActivity2.this, userData, systemData);
-                        mLvProcessManager.setAdapter(processAdapter);
-                        mLlProcessTitle.setVisibility(View.VISIBLE);
+//                        ProcessAdapter processAdapter = new ProcessAdapter(ProcessManagerActivity2.this, userData, systemData);
+//                        mLvProcessManager.setAdapter(processAdapter);
+//                        mLlProcessTitle.setVisibility(View.VISIBLE);
+
+                        ProcessAdapter2 processAdapter = new ProcessAdapter2();
+                        mSlhLvProcessManager.setAdapter(processAdapter);
                     }
                 });
             }
         }).start();
 
         //给listview设置滚动监听
-        mLvProcessManager.setOnScrollListener(new AbsListView.OnScrollListener() {
+        mSlhLvProcessManager.setOnScrollListener(new AbsListView.OnScrollListener() {
             //当listview的滚动状态改变时，调用该方法
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -127,5 +137,86 @@ public class ProcessManagerActivity2 extends AppCompatActivity {
         mPdvProcessMemory.setLeftText("占用内存：" + Formatter.formatFileSize(getApplicationContext(), usedMemory));
         mPdvProcessMemory.setRightText("可用内存：" + Formatter.formatFileSize(getApplicationContext(), availMemory));
         mPdvProcessMemory.setProgress((int) (usedMemory * 100f / totalMemory + 0.5f));
+    }
+
+    private class ProcessAdapter2 extends BaseAdapter implements StickyListHeadersAdapter {
+
+        @Override
+        public int getCount() {
+            return mData.size();
+        }
+
+        @Override
+        public ProcessInfoBean getItem(int position) {
+            return mData.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+            if (convertView == null) {
+                convertView = View.inflate(ProcessManagerActivity2.this, R.layout.view_item_processmanager, null);
+                holder = new ViewHolder();
+                holder.ivIcon = (ImageView) convertView.findViewById(R.id.iv_process_manager_icon);
+                holder.tvName = (TextView) convertView.findViewById(R.id.tv_process_manager_name);
+                holder.tvMemory = (TextView) convertView.findViewById(R.id.tv_process_manager_memory);
+                holder.cb = (CheckBox) convertView.findViewById(R.id.cb_process_manager);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            ProcessInfoBean processInfoBean = getItem(position);
+            holder.ivIcon.setImageDrawable(processInfoBean.appIcon);
+            holder.tvName.setText(processInfoBean.appName);
+            holder.tvMemory.setText(Formatter.formatFileSize(ProcessManagerActivity2.this, processInfoBean.appMemory));
+            return convertView;
+        }
+
+        // 根据头视图的id创建出不同头视图界面对象
+        @Override
+        public View getHeaderView(int position, View convertView, ViewGroup parent) {
+            int headerId = (int) getHeaderId(position);
+            if (convertView == null) {
+                convertView = View.inflate(ProcessManagerActivity2.this, R.layout.view_item_processmanager_title, null);
+            }
+            TextView mTvProcessTitle = (TextView) convertView.findViewById(R.id.tv_process_title);
+            switch (headerId) {
+                case 0:
+                    mTvProcessTitle.setText("系统进程(" + systemData.size() + ")个");
+                    break;
+                case 1:
+                    mTvProcessTitle.setText("用户进程(" + userData.size() + ")个");
+                    break;
+                default:
+                    break;
+            }
+            return convertView;
+        }
+
+        /**
+         * 根据索引返回头视图的id
+         * position 是listview的数据的原本的索引
+         */
+        @Override
+        public long getHeaderId(int position) {
+            ProcessInfoBean processInfoBean = getItem(position);
+            if (processInfoBean.isSystem) {
+                return 0;// 系统进程的头id是0
+            } else {
+                return 1;// 用户进程的头id是1
+            }
+        }
+
+        class ViewHolder {
+            ImageView ivIcon;
+            TextView tvName;
+            TextView tvMemory;
+            CheckBox cb;
+        }
     }
 }
