@@ -65,7 +65,7 @@ public class ProcessManagerActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mLlLoading.setVisibility(View.INVISIBLE);
-                        ProcessAdapter processAdapter = new ProcessAdapter(ProcessManagerActivity.this, mData);
+                        ProcessAdapter processAdapter = new ProcessAdapter(ProcessManagerActivity.this, userData, systemData);
                         mLvProcessManager.setAdapter(processAdapter);
                         mLlProcessTitle.setVisibility(View.VISIBLE);
                     }
