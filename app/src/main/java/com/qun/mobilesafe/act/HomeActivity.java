@@ -84,7 +84,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 1:
                 System.out.println("进程管理");
-                startActivity(new Intent(HomeActivity.this, ProcessManagerActivity.class));
+//                startActivity(new Intent(HomeActivity.this, ProcessManagerActivity.class));
+                startActivity(new Intent(HomeActivity.this, ProcessManagerActivity2.class));
                 break;
             case 2:
                 System.out.println("手机杀毒");

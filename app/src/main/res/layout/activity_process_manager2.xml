@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.qun.mobilesafe.act.ProcessManagerActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/style_title"
+            android:text="进程管理"/>
+
+        <ImageButton
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:background="@null"
+            android:src="@drawable/selector_process_manager_clean"/>
+
+    </RelativeLayout>
+
+    <com.qun.mobilesafe.view.ProgressDescView
+        android:id="@+id/pdv_process_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.qun.mobilesafe.view.ProgressDescView>
+
+    <com.qun.mobilesafe.view.ProgressDescView
+        android:id="@+id/pdv_process_memory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.qun.mobilesafe.view.ProgressDescView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/lv_process_manager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+
+        <!-- include相当于将布局文件直接写入到当前位置,注意：使用include标签一样要将layout_开头的数据设置在 include标签内 -->
+        <include
+            layout="@layout/view_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/ll_process_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#9c9c9c"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="用户进程(3)个"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
