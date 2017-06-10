@@ -3,6 +3,7 @@ package com.qun.mobilesafe.act;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +33,14 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
     private ProgressDescView mPdvProcessMemory;
     private StickyListHeadersListView mSlhLvProcessManager;
     private List<ProcessInfoBean> mData = new ArrayList<>();
-    private View mLlLoading;// 加载进度圈
+    private View mLlLoading;//加载进度圈
     private Button mBtnProcessAll;
     private Button mBtnProcessReverse;
-    private List<ProcessInfoBean> userData = new ArrayList<>();// 用户进程数据
-    private List<ProcessInfoBean> systemData = new ArrayList<>();// 系统进程数据
+    private List<ProcessInfoBean> userData = new ArrayList<>();//用户进程数据
+    private List<ProcessInfoBean> systemData = new ArrayList<>();//系统进程数据
     private ProcessAdapter2 mProcessAdapter;
     private ImageButton mIbProcessClean;
+    private int mRunningProcessNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,7 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
         mBtnProcessAll.setOnClickListener(this);
         mBtnProcessReverse.setOnClickListener(this);
 
-        // 清理按钮
+        //清理按钮
         mIbProcessClean = (ImageButton) findViewById(R.id.ib_process_clean);
         mIbProcessClean.setOnClickListener(this);
 
@@ -97,21 +99,24 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
     }
 
     private void initData() {
-        // 获取进程数并设置界面
+        //获取进程数并设置界面
         initProcessNum();
-        // 获取内存数并设置
+        //获取内存数并设置
         initMemory();
     }
 
     private void initProcessNum() {
-        //获取进程数并设置界面
+        mRunningProcessNum = ProcessInfoProvider.getRunningProcessNum(getApplicationContext());
+        initCleanProcessNum();
+    }
+
+    private void initCleanProcessNum() {
         mPdvProcessNum.setTitle("进程数：");
-        int runningProcessNum = ProcessInfoProvider.getRunningProcessNum(getApplicationContext());
         int allProcessNum = ProcessInfoProvider.getAllProcessNum(getApplicationContext());
-        mPdvProcessNum.setLeftText("正在运行(" + runningProcessNum + ")个");
+        mPdvProcessNum.setLeftText("正在运行(" + mRunningProcessNum + ")个");
         mPdvProcessNum.setRightText("总进程(" + allProcessNum + ")个");
         //通过+0.5f进行四舍五入
-        mPdvProcessNum.setProgress((int) (runningProcessNum * 100f / allProcessNum + 0.5f));
+        mPdvProcessNum.setProgress((int) (mRunningProcessNum * 100f / allProcessNum + 0.5f));
     }
 
     private void initMemory() {
@@ -128,15 +133,23 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_process_all:// 全选
-                // 遍历所有的数据，将对应列表的javabean的字段设置为选中并刷新即可
+                //遍历所有的数据，将对应列表的javabean的字段设置为选中并刷新即可
                 for (ProcessInfoBean bean : mData) {
+                    //如果遇到本应用的包名时，不做任务操作
+                    if (TextUtils.equals(bean.appPackageName, getPackageName())) {
+                        continue;
+                    }
                     bean.isSelected = true;
                 }
                 mProcessAdapter.notifyDataSetChanged();
                 break;
             case R.id.btn_process_reverse:// 反选
-                // 遍历所有的数据，将对应列表的javabean的字段取反并刷新即可
+                //遍历所有的数据，将对应列表的javabean的字段取反并刷新即可
                 for (ProcessInfoBean bean : mData) {
+                    // 如果遇到本应用的包名时，不做任务操作
+                    if (TextUtils.equals(bean.appPackageName, getPackageName())) {
+                        continue;
+                    }
                     bean.isSelected = !bean.isSelected;
                 }
                 mProcessAdapter.notifyDataSetChanged();
@@ -157,13 +170,41 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
                     if (processInfoBean.isSelected) {
                         ProcessInfoProvider.cleanProcess(getApplicationContext(), processInfoBean.appPackageName);
                         listIterator.remove();
+
+                        // mData里面要删除时，必须从系统与用户集合中同时删除，保证数据统一
+                        if (processInfoBean.isSystem) {
+                            systemData.remove(processInfoBean);
+                        } else {
+                            userData.remove(processInfoBean);
+                        }
                     }
                 }
                 mProcessAdapter.notifyDataSetChanged();
+
+                //重新计算进程数
+                mRunningProcessNum = mData.size();
+                initCleanProcessNum();
+
+                //重新计算占用内存数
+                long usedMemory = 0;
+                for (ProcessInfoBean bean : mData) {
+                    usedMemory += bean.appMemory;
+                }
+                initCleanMemory(usedMemory);
                 break;
             default:
                 break;
         }
+    }
+
+    private void initCleanMemory(long usedMemory) {
+        long totalMemory = ProcessInfoProvider.getTotalMemory(getApplicationContext());
+        long avaliMemory = totalMemory - usedMemory;
+
+        mPdvProcessMemory.setTitle("内存：");
+        mPdvProcessMemory.setLeftText("占用内存：" + Formatter.formatFileSize(getApplicationContext(), usedMemory));
+        mPdvProcessMemory.setRightText("可用内存：" + Formatter.formatFileSize(getApplicationContext(), avaliMemory));
+        mPdvProcessMemory.setProgress((int) (usedMemory * 100f / totalMemory + 0.5f));
     }
 
     private class ProcessAdapter2 extends BaseAdapter implements StickyListHeadersAdapter {
@@ -199,7 +240,7 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
             }
             final ProcessInfoBean processInfoBean = getItem(position);
             holder.ivIcon.setImageDrawable(processInfoBean.appIcon);
-            // 根据条目javabean动态设置选中状态
+            //根据条目javabean动态设置选中状态
 //            if (processInfoBean.isSelected) {
 //                holder.cb.setChecked(true);
 //            } else {
@@ -216,10 +257,17 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
             });
             holder.tvName.setText(processInfoBean.appName);
             holder.tvMemory.setText(Formatter.formatFileSize(ProcessManagerActivity2.this, processInfoBean.appMemory));
+
+            // 判断当前条目是否与应用包名一致，如果一致，将选择框隐藏
+            if (TextUtils.equals(processInfoBean.appPackageName, getPackageName())) {
+                holder.cb.setVisibility(View.INVISIBLE);
+            } else {
+                holder.cb.setVisibility(View.VISIBLE);
+            }
             return convertView;
         }
 
-        // 根据头视图的id创建出不同头视图界面对象
+        //根据头视图的id创建出不同头视图界面对象
         @Override
         public View getHeaderView(int position, View convertView, ViewGroup parent) {
             int headerId = (int) getHeaderId(position);
