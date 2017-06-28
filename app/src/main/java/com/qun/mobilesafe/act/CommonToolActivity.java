@@ -43,8 +43,8 @@ public class CommonToolActivity extends AppCompatActivity implements View.OnClic
             case R.id.common_tool_siv_number://常用号码
                 startActivity(new Intent(CommonToolActivity.this, CommonNumberActivity.class));
                 break;
-            case R.id.common_tool_siv_applock:
-
+            case R.id.common_tool_siv_applock://程序锁管理
+                startActivity(new Intent(CommonToolActivity.this, AppLockActivity.class));
                 break;
             case R.id.common_tool_siv_dog:
 
