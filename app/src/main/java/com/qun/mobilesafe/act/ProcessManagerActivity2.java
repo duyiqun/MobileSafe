@@ -1,5 +1,6 @@
 package com.qun.mobilesafe.act;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +22,9 @@ import android.widget.TextView;
 import com.qun.mobilesafe.R;
 import com.qun.mobilesafe.bean.ProcessInfoBean;
 import com.qun.mobilesafe.engine.ProcessInfoProvider;
+import com.qun.mobilesafe.service.AutoCleanService;
 import com.qun.mobilesafe.utils.Contants;
+import com.qun.mobilesafe.utils.ServiceStateUtil;
 import com.qun.mobilesafe.utils.SpUtil;
 import com.qun.mobilesafe.view.ProgressDescView;
 import com.qun.mobilesafe.view.SettingItemView;
@@ -42,14 +45,17 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
     private View mLlLoading;//加载进度圈
     private Button mBtnProcessAll;
     private Button mBtnProcessReverse;
-    private List<ProcessInfoBean> userData = new ArrayList<>();//用户进程数据
-    private List<ProcessInfoBean> systemData = new ArrayList<>();//系统进程数据
+    private List<ProcessInfoBean> mUserData = new ArrayList<>();//用户进程数据
+    private List<ProcessInfoBean> mSystemData = new ArrayList<>();//系统进程数据
     private ProcessAdapter2 mProcessAdapter;
     private ImageButton mIbProcessClean;
     private int mRunningProcessNum;
     private ImageView mIvProcessArrow1;
     private ImageView mIvProcessArrow2;
     private SlidingDrawer mSlidingDrawer;
+    private SettingItemView mSivProcessShow;
+    private SettingItemView mSivProcessClean;
+    private boolean mIsSystemShow;// 记录当前界面是否要显示系统进程
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +90,13 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
                 List<ProcessInfoBean> runningProcessInfos = ProcessInfoProvider.getRunningProcessInfos(getApplicationContext());
                 for (ProcessInfoBean processInfoBean : runningProcessInfos) {
                     if (processInfoBean.isSystem) {
-                        systemData.add(processInfoBean);
+                        mSystemData.add(processInfoBean);
                     } else {
-                        userData.add(processInfoBean);
+                        mUserData.add(processInfoBean);
                     }
                 }
-                mData.addAll(userData);
-                mData.addAll(systemData);
+                mData.addAll(mUserData);
+                mData.addAll(mSystemData);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -127,6 +133,18 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
                 stopArrowAnimation();
             }
         });
+
+        //获取显示系统进程与锁屏自动清理
+        mSivProcessShow = (SettingItemView) findViewById(R.id.siv_process_show);
+        mSivProcessClean = (SettingItemView) findViewById(R.id.siv_process_clean);
+
+        mSivProcessShow.setOnClickListener(this);
+        mSivProcessClean.setOnClickListener(this);
+
+        //在界面展示时，回显系统显示安装的状态
+        mIsSystemShow = SpUtil.getBoolean(getApplicationContext(),
+                Contants.KEY_SYSTEM_SHOW, true);
+        mSivProcessShow.setToggle(mIsSystemShow);
     }
 
     private void stopArrowAnimation() {
@@ -188,7 +206,13 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
         switch (v.getId()) {
             case R.id.btn_process_all:// 全选
                 //遍历所有的数据，将对应列表的javabean的字段设置为选中并刷新即可
-                for (ProcessInfoBean bean : mData) {
+                List<ProcessInfoBean> allData;
+                if (mIsSystemShow) {
+                    allData = mData;
+                } else {
+                    allData = mUserData;
+                }
+                for (ProcessInfoBean bean : allData) {
                     //如果遇到本应用的包名时，不做任务操作
                     if (TextUtils.equals(bean.appPackageName, getPackageName())) {
                         continue;
@@ -199,7 +223,13 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
                 break;
             case R.id.btn_process_reverse:// 反选
                 //遍历所有的数据，将对应列表的javabean的字段取反并刷新即可
-                for (ProcessInfoBean bean : mData) {
+                List<ProcessInfoBean> reverseData;
+                if (mIsSystemShow) {
+                    reverseData = mData;
+                } else {
+                    reverseData = mUserData;
+                }
+                for (ProcessInfoBean bean : reverseData) {
                     // 如果遇到本应用的包名时，不做任务操作
                     if (TextUtils.equals(bean.appPackageName, getPackageName())) {
                         continue;
@@ -218,18 +248,30 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
 //                    }
 //                }
 
-                ListIterator<ProcessInfoBean> listIterator = mData.listIterator();
+                List<ProcessInfoBean> cleanData;
+                if (mIsSystemShow) {
+                    cleanData = mData;
+                } else {
+                    cleanData = mUserData;
+                }
+
+                ListIterator<ProcessInfoBean> listIterator = cleanData.listIterator();
                 while (listIterator.hasNext()) {
                     ProcessInfoBean processInfoBean = (ProcessInfoBean) listIterator.next();
                     if (processInfoBean.isSelected) {
                         ProcessInfoProvider.cleanProcess(getApplicationContext(), processInfoBean.appPackageName);
                         listIterator.remove();
 
-                        // mData里面要删除时，必须从系统与用户集合中同时删除，保证数据统一
-                        if (processInfoBean.isSystem) {
-                            systemData.remove(processInfoBean);
+                        if (mIsSystemShow) {
+                            //mData里面要删除时，必须从系统与用户集合中同时删除，保证数据统一
+                            if (processInfoBean.isSystem) {
+                                mSystemData.remove(processInfoBean);
+                            } else {
+                                mUserData.remove(processInfoBean);
+                            }
                         } else {
-                            userData.remove(processInfoBean);
+                            //如果用户集合中数据删除了，同样在mData里面也要删除，保证数据的统一
+                            mData.remove(processInfoBean);
                         }
                     }
                 }
@@ -246,6 +288,22 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
                 }
                 initCleanMemory(usedMemory);
                 break;
+            case R.id.siv_process_show://显示系统进程
+                mSivProcessShow.toggle();
+                SpUtil.saveBoolean(getApplicationContext(),
+                        mSivProcessShow.isToggle(), Contants.KEY_SYSTEM_SHOW);
+                mIsSystemShow = mSivProcessShow.isToggle();
+                mProcessAdapter.notifyDataSetChanged();
+                break;
+            case R.id.siv_process_clean://锁屏清理
+                mSivProcessClean.toggle();
+                //根据服务的状态来启动或关闭操作
+                if (ServiceStateUtil.isServiceRunning(ProcessManagerActivity2.this, AutoCleanService.class)) {
+                    stopService(new Intent(ProcessManagerActivity2.this, AutoCleanService.class));
+                } else {
+                    startService(new Intent(ProcessManagerActivity2.this, AutoCleanService.class));
+                }
+                break;
             default:
                 break;
         }
@@ -253,11 +311,11 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
 
     private void initCleanMemory(long usedMemory) {
         long totalMemory = ProcessInfoProvider.getTotalMemory(getApplicationContext());
-        long avaliMemory = totalMemory - usedMemory;
+        long availMemory = totalMemory - usedMemory;
 
         mPdvProcessMemory.setTitle("内存：");
         mPdvProcessMemory.setLeftText("占用内存：" + Formatter.formatFileSize(getApplicationContext(), usedMemory));
-        mPdvProcessMemory.setRightText("可用内存：" + Formatter.formatFileSize(getApplicationContext(), avaliMemory));
+        mPdvProcessMemory.setRightText("可用内存：" + Formatter.formatFileSize(getApplicationContext(), availMemory));
         mPdvProcessMemory.setProgress((int) (usedMemory * 100f / totalMemory + 0.5f));
     }
 
@@ -265,12 +323,20 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
 
         @Override
         public int getCount() {
-            return mData.size();
+            if (mIsSystemShow) {
+                return mData.size();
+            } else {
+                return mUserData.size();
+            }
         }
 
         @Override
         public ProcessInfoBean getItem(int position) {
-            return mData.get(position);
+            if (mIsSystemShow) {
+                return mData.get(position);
+            } else {
+                return mUserData.get(position);
+            }
         }
 
         @Override
@@ -331,10 +397,10 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
             TextView mTvProcessTitle = (TextView) convertView.findViewById(R.id.tv_process_title);
             switch (headerId) {
                 case 0:
-                    mTvProcessTitle.setText("系统进程(" + systemData.size() + ")个");
+                    mTvProcessTitle.setText("系统进程(" + mSystemData.size() + ")个");
                     break;
                 case 1:
-                    mTvProcessTitle.setText("用户进程(" + userData.size() + ")个");
+                    mTvProcessTitle.setText("用户进程(" + mUserData.size() + ")个");
                     break;
                 default:
                     break;

@@ -83,7 +83,7 @@ public class SettingItemView extends RelativeLayout {
 
     //设置开关的图片切换
     public void setToggle(boolean isOpen) {
-        if (!isOpen) {
+        if (isOpen) {
             mSivItemIcon.setImageResource(R.mipmap.on);
         } else {
             mSivItemIcon.setImageResource(R.mipmap.off);
