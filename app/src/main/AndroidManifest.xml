@@ -64,7 +64,9 @@
             android:name=".act.ProcessManagerActivity2"
             android:theme="@style/activity_style">
         </activity>
-        <activity android:name=".act.AppLockActivity">
+        <activity
+            android:name=".act.AppLockActivity"
+            android:theme="@style/activity_style">
         </activity>
     </application>
 
