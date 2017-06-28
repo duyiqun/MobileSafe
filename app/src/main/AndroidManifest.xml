@@ -50,6 +50,7 @@
         </activity>
 
         <service android:name=".service.LocationService"/>
+        <service android:name=".service.AutoCleanService"/>
 
         <activity
             android:name=".act.CommonNumberActivity"

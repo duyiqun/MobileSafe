@@ -163,4 +163,13 @@ public class ProcessInfoProvider {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         activityManager.killBackgroundProcesses(packageName);
     }
+
+    //清理所有的正在执行的进程即可
+    public static void cleanAllProcess(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ProcessInfoBean> runningProcessInfos = getRunningProcessInfos(context);
+        for (ProcessInfoBean processInfoBean : runningProcessInfos) {
+            activityManager.killBackgroundProcesses(processInfoBean.appPackageName);
+        }
+    }
 }

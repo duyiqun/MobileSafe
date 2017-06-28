@@ -319,6 +319,17 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
         mPdvProcessMemory.setProgress((int) (usedMemory * 100f / totalMemory + 0.5f));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (ServiceStateUtil.isServiceRunning(ProcessManagerActivity2.this, AutoCleanService.class)) {
+            mSivProcessClean.setToggle(true);
+        } else {
+            mSivProcessClean.setToggle(false);
+        }
+    }
+
     private class ProcessAdapter2 extends BaseAdapter implements StickyListHeadersAdapter {
 
         @Override
