@@ -74,6 +74,22 @@
                 android:layout_height="wrap_content"
                 android:background="@mipmap/drawer_bg">
 
+                <ImageView
+                    android:id="@+id/iv_process_arrow1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:src="@mipmap/drawer_arrow_up"/>
+
+                <ImageView
+                    android:id="@+id/iv_process_arrow2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_process_arrow1"
+                    android:layout_centerHorizontal="true"
+                    android:src="@mipmap/drawer_arrow_up"/>
+
             </RelativeLayout>
 
             <LinearLayout
@@ -84,6 +100,28 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="进程管理设置"/>
+
+                <com.qun.mobilesafe.view.SettingItemView
+                    android:id="@+id/siv_process_show"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    qun:backgroundType="first"
+                    qun:title="显示系统进程">
+                </com.qun.mobilesafe.view.SettingItemView>
+
+                <com.qun.mobilesafe.view.SettingItemView
+                    android:id="@+id/siv_process_clean"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    qun:backgroundType="last"
+                    qun:title="锁屏自动清理">
+                </com.qun.mobilesafe.view.SettingItemView>
 
             </LinearLayout>
 

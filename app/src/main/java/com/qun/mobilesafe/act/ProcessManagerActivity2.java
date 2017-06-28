@@ -7,18 +7,24 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
 import com.qun.mobilesafe.bean.ProcessInfoBean;
 import com.qun.mobilesafe.engine.ProcessInfoProvider;
+import com.qun.mobilesafe.utils.Contants;
+import com.qun.mobilesafe.utils.SpUtil;
 import com.qun.mobilesafe.view.ProgressDescView;
+import com.qun.mobilesafe.view.SettingItemView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +47,9 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
     private ProcessAdapter2 mProcessAdapter;
     private ImageButton mIbProcessClean;
     private int mRunningProcessNum;
+    private ImageView mIvProcessArrow1;
+    private ImageView mIvProcessArrow2;
+    private SlidingDrawer mSlidingDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +105,51 @@ public class ProcessManagerActivity2 extends AppCompatActivity implements View.O
                 });
             }
         }).start();
+
+        //设置箭头动画
+        mIvProcessArrow1 = (ImageView) findViewById(R.id.iv_process_arrow1);
+        mIvProcessArrow2 = (ImageView) findViewById(R.id.iv_process_arrow2);
+        startArrowAnimation();
+
+        //给SlidingDrawer设置打开关闭监听
+        mSlidingDrawer = (SlidingDrawer) findViewById(R.id.slidingdrawer);
+        mSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
+
+            @Override
+            public void onDrawerClosed() {
+                startArrowAnimation();
+            }
+        });
+        mSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
+
+            @Override
+            public void onDrawerOpened() {
+                stopArrowAnimation();
+            }
+        });
+    }
+
+    private void stopArrowAnimation() {
+        mIvProcessArrow1.clearAnimation();
+        mIvProcessArrow2.clearAnimation();
+        mIvProcessArrow1.setImageResource(R.mipmap.drawer_arrow_down);
+        mIvProcessArrow2.setImageResource(R.mipmap.drawer_arrow_down);
+    }
+
+    private void startArrowAnimation() {
+        mIvProcessArrow1.setImageResource(R.mipmap.drawer_arrow_up);
+        mIvProcessArrow2.setImageResource(R.mipmap.drawer_arrow_up);
+
+        AlphaAnimation alphaAnimation1 = new AlphaAnimation(0.2f, 1.0f);
+        alphaAnimation1.setDuration(500);
+        alphaAnimation1.setRepeatCount(Animation.INFINITE);
+        alphaAnimation1.setRepeatMode(Animation.REVERSE);// 重复模式
+        mIvProcessArrow1.startAnimation(alphaAnimation1);
+        AlphaAnimation alphaAnimation2 = new AlphaAnimation(1.0f, 0.2f);
+        alphaAnimation2.setDuration(500);
+        alphaAnimation2.setRepeatCount(Animation.INFINITE);
+        alphaAnimation2.setRepeatMode(Animation.REVERSE);// 重复模式
+        mIvProcessArrow2.startAnimation(alphaAnimation2);
     }
 
     private void initData() {
