@@ -2,6 +2,7 @@ package com.qun.mobilesafe.act;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -9,7 +10,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
+import com.qun.mobilesafe.adapter.AppLockAdapter;
 import com.qun.mobilesafe.bean.AppInfoBean;
+import com.qun.mobilesafe.engine.AppInfoProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +57,26 @@ public class AppLockActivity extends AppCompatActivity implements View.OnClickLi
 
     private void initData() {
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SystemClock.sleep(1000);
+
+                List<AppInfoBean> allAppInfos = AppInfoProvider.getAllAppInfos(getApplicationContext());
+                mUnlockData.addAll(allAppInfos);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTvApplock.setText("未加锁(" + mUnlockData.size() + ")个");
+                        mLlLoading.setVisibility(View.INVISIBLE);
+
+                        AppLockAdapter unLockAdapter = new AppLockAdapter(AppLockActivity.this, mUnlockData);
+                        mLvApplockUnlock.setAdapter(unLockAdapter);
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
