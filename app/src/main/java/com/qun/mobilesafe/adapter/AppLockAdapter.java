@@ -19,11 +19,16 @@ import java.util.List;
 public class AppLockAdapter extends BaseAdapter {
 
     private final List<AppInfoBean> mData;
+    private final boolean mIsLock;//用来区分未加锁与已加锁操作，true，已加锁
+    private final List<AppInfoBean> mOtherData;
     private Context mContext;
 
-    public AppLockAdapter(Context context, List<AppInfoBean> unlockData) {
+    //如果isLock为true，data是已加锁的数据集合，otherData是未加锁的数据集合，如果isLock为false，data是未加锁的数据集合，otherData是已加锁的数据集合
+    public AppLockAdapter(Context context, List<AppInfoBean> unlockData, List<AppInfoBean> otherData, boolean isLock) {
         this.mContext = context;
         this.mData = unlockData;
+        this.mIsLock = isLock;
+        this.mOtherData = otherData;
     }
 
     @Override
@@ -58,6 +63,12 @@ public class AppLockAdapter extends BaseAdapter {
         AppInfoBean appInfoBean = mData.get(position);
         holder.tvName.setText(appInfoBean.appName);
         holder.ivIcon.setImageDrawable(appInfoBean.appIcon);
+        if (mIsLock) {
+            holder.ivApplock.setImageResource(R.drawable.selector_iv_unlock);
+        } else {
+            holder.ivApplock.setImageResource(R.drawable.selector_iv_lock);
+        }
+
         return convertView;
     }
 
