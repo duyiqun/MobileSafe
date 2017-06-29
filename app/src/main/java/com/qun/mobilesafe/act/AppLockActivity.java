@@ -62,8 +62,8 @@ public class AppLockActivity extends AppCompatActivity implements View.OnClickLi
             public void run() {
                 SystemClock.sleep(1000);
 
-                List<AppInfoBean> allAppInfos = AppInfoProvider.getAllAppInfos(getApplicationContext());
-                mUnlockData.addAll(allAppInfos);
+                List<AppInfoBean> allAppInfo = AppInfoProvider.getAllAppInfo(getApplicationContext());
+                mUnlockData.addAll(allAppInfo);
 
                 runOnUiThread(new Runnable() {
                     @Override

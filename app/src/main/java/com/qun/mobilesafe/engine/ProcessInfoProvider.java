@@ -117,7 +117,7 @@ public class ProcessInfoProvider {
     }
 
     // 返回正在运行的进程数据
-    public static List<ProcessInfoBean> getRunningProcessInfos(Context context) {
+    public static List<ProcessInfoBean> getRunningProcessInfo(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = activityManager.getRunningAppProcesses();
         PackageManager packageManager = context.getPackageManager();
@@ -167,8 +167,8 @@ public class ProcessInfoProvider {
     //清理所有的正在执行的进程即可
     public static void cleanAllProcess(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ProcessInfoBean> runningProcessInfos = getRunningProcessInfos(context);
-        for (ProcessInfoBean processInfoBean : runningProcessInfos) {
+        List<ProcessInfoBean> runningProcessInfo = getRunningProcessInfo(context);
+        for (ProcessInfoBean processInfoBean : runningProcessInfo) {
             activityManager.killBackgroundProcesses(processInfoBean.appPackageName);
         }
     }

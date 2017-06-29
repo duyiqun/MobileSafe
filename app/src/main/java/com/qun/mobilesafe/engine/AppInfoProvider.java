@@ -18,7 +18,7 @@ import java.util.List;
 public class AppInfoProvider {
 
     //获取安装在设备上的所有的应用数据
-    public static List<AppInfoBean> getAllAppInfos(Context context) {
+    public static List<AppInfoBean> getAllAppInfo(Context context) {
         PackageManager packageManager = context.getPackageManager();
         List<PackageInfo> installedPackages = packageManager.getInstalledPackages(0);
         List<AppInfoBean> data = new ArrayList<AppInfoBean>();

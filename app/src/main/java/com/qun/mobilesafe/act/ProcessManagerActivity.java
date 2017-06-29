@@ -54,8 +54,8 @@ public class ProcessManagerActivity extends AppCompatActivity {
             @Override
             public void run() {
                 SystemClock.sleep(2000);
-                List<ProcessInfoBean> runningProcessInfos = ProcessInfoProvider.getRunningProcessInfos(getApplicationContext());
-                for (ProcessInfoBean processInfoBean : runningProcessInfos) {
+                List<ProcessInfoBean> runningProcessInfo = ProcessInfoProvider.getRunningProcessInfo(getApplicationContext());
+                for (ProcessInfoBean processInfoBean : runningProcessInfo) {
                     if (processInfoBean.isSystem) {
                         systemData.add(processInfoBean);
                     } else {
