@@ -132,4 +132,12 @@ public class AppLockActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
+
+    public void updateNum(boolean isLock) {
+        if (isLock) {
+            mTvApplock.setText("已加锁(" + mLockData.size() + ")个");
+        } else {
+            mTvApplock.setText("未加锁(" + mUnlockData.size() + ")个");
+        }
+    }
 }
