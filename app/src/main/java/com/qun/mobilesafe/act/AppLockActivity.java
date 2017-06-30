@@ -76,10 +76,10 @@ public class AppLockActivity extends AppCompatActivity implements View.OnClickLi
                         mUnlockData.add(appInfoBean);
                     }
 
-                    // 给已加锁的列表写死一个数据
-                    if (TextUtils.equals(appInfoBean.appPackageName, "com.android.browser")) {
-                        mLockData.add(appInfoBean);
-                    }
+//                    // 给已加锁的列表写死一个数据
+//                    if (TextUtils.equals(appInfoBean.appPackageName, "com.android.browser")) {
+//                        mLockData.add(appInfoBean);
+//                    }
                 }
 
                 runOnUiThread(new Runnable() {

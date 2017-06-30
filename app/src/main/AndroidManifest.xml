@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <!-- 清理进程的权限 -->
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
+    <!-- 获取任务栈权限 -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
         android:allowBackup="true"
@@ -51,6 +53,7 @@
 
         <service android:name=".service.LocationService"/>
         <service android:name=".service.AutoCleanService"/>
+        <service android:name=".service.WatchDogService"/>
 
         <activity
             android:name=".act.CommonNumberActivity"
@@ -67,6 +70,8 @@
         <activity
             android:name=".act.AppLockActivity"
             android:theme="@style/activity_style">
+        </activity>
+        <activity android:name=".act.PassWordEnterActivity">
         </activity>
     </application>
 
