@@ -99,4 +99,18 @@ public class PassWordEnterActivity extends AppCompatActivity implements View.OnC
                 break;
         }
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        initData();
+//    }
+
+    //如果当前activity设置启动模式为singleInstance，它的intent数据只要界面不销毁不会获取最新的数据，如果需要获取最新的数据则实现以下方法
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        initData();
+    }
 }

@@ -27,6 +27,7 @@ public class WatchDogService extends Service {
     private ActivityManager mActivityManager;
     private AppLockDao mAppLockDao;
     private String mSkipPackageName = "";//需要不拦截的包名
+    private boolean mIsRunning;
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
@@ -58,9 +59,10 @@ public class WatchDogService extends Service {
     }
 
     private void startWatchDog() {
+        mIsRunning = true;
         new Thread() {
             public void run() {
-                while (true) {
+                while (mIsRunning) {
                     List<ActivityManager.RunningTaskInfo> runningTasks = mActivityManager.getRunningTasks(1);
                     ActivityManager.RunningTaskInfo runningTaskInfo = runningTasks.get(0);
                     ComponentName topActivity = runningTaskInfo.topActivity;
@@ -75,6 +77,7 @@ public class WatchDogService extends Service {
                         // 展示一个界面拦截一下即可
                         Intent intent = new Intent(WatchDogService.this, PassWordEnterActivity.class);
                         intent.putExtra(Contants.KEY_PACKAGE_NAME, packageName);
+                        //FLAG_ACTIVITY_NEW_TASK如果本应用有任务栈直接将PassWordEnterActivity放入，如果没有直接创建新的本应用的任务栈并放入
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
@@ -90,5 +93,6 @@ public class WatchDogService extends Service {
         System.out.println("电子狗服务销毁了");
 
         unregisterReceiver(mReceiver);
+        mIsRunning = false;
     }
 }
