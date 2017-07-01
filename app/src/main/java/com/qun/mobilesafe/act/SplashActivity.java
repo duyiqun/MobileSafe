@@ -74,7 +74,9 @@ public class SplashActivity extends AppCompatActivity {
         copyCommonDb();
 
         //复制常用号码数据库
-        copyCommonNumDb();
+        copyDb("commonnum.db");
+        //复制病毒数据
+        copyDb("antivirus.db");
     }
 
     private void initVersionName() {
@@ -313,8 +315,8 @@ public class SplashActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void copyCommonNumDb() {
-        final File dbFile = new File(getFilesDir(), "commonnum.db");
+    private void copyDb(final String dbName) {
+        final File dbFile = new File(getFilesDir(), dbName);
         if (dbFile.exists()) {
             return;
         }
@@ -325,7 +327,7 @@ public class SplashActivity extends AppCompatActivity {
                 InputStream inputStream = null;
                 FileOutputStream fos = null;
                 try {
-                    inputStream = assetManager.open("commonnum.db");
+                    inputStream = assetManager.open(dbName);
                     fos = new FileOutputStream(dbFile);
                     int len = -1;
                     byte[] buffer = new byte[1024];
