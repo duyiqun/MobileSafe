@@ -89,6 +89,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 2:
                 System.out.println("手机杀毒");
+                startActivity(new Intent(HomeActivity.this, AntiVirusActivity.class));
                 break;
             case 3:
                 System.out.println("功能设置");

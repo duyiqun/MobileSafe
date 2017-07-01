@@ -31,6 +31,7 @@ public class AppInfoProvider {
             bean.appName = appName;
 
             bean.appPackageName = packageInfo.packageName;
+            bean.appPath = applicationInfo.sourceDir;
             data.add(bean);
         }
         return data;

@@ -7,4 +7,6 @@ public class AppInfoBean {
     public Drawable appIcon;
     public String appName;
     public String appPackageName;
+
+    public String appPath;//apk路径
 }

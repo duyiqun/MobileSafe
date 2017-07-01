@@ -78,6 +78,10 @@
             android:launchMode="singleInstance"
             android:theme="@style/activity_style">
         </activity>
+        <activity
+            android:name=".act.AntiVirusActivity"
+            android:theme="@style/activity_style">
+        </activity>
     </application>
 
 </manifest>
