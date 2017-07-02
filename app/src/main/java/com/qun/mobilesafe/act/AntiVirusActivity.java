@@ -1,8 +1,5 @@
 package com.qun.mobilesafe.act;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -181,10 +178,10 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
             //获取百分百界面的左边的图片
             Bitmap leftBitmap = getLeftDrawingCache(drawingCache);
             mIvAntiVirusAnimationLeft.setImageBitmap(leftBitmap);
-//            //获取百分百界面的右边的图片
-//            Bitmap rightBitmap = getRightDrawingCache(drawingCache);
-//            mIvAntiVirusAnimationRight.setImageBitmap(rightBitmap);
-//
+            //获取百分百界面的右边的图片
+            Bitmap rightBitmap = getRightDrawingCache(drawingCache);
+            mIvAntiVirusAnimationRight.setImageBitmap(rightBitmap);
+
 //            //将扫描界面隐藏
 //            mLlAntiVirusScan.setVisibility(View.INVISIBLE);
 //
@@ -204,20 +201,20 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
             return newBitmap;
         }
 
-//        public Bitmap getRightDrawingCache(Bitmap drawingCache) {
-//            // 创建出一个与左半边一样大小的bitmap对象出来
-//            int width = (int) (drawingCache.getWidth() / 2.0f + 0.5f);
-//            int height = drawingCache.getHeight();
-//            Bitmap.Config config = drawingCache.getConfig();
-//            Bitmap newBitmap = Bitmap.createBitmap(width, height, config);
-//            Canvas canvas = new Canvas(newBitmap);
-//            Matrix matrix = new Matrix();//矩阵设置图片以什么形式(平移，缩放，旋转)绘制到画布
-//            // matrix.setTranslate(-width, 0);//让图片左移一半，将右半边的图片放置到画布上，只能设置一次操作
-//            matrix.postTranslate(-width, 0);//能设置多次操作
-//            canvas.drawBitmap(drawingCache, matrix, null);
-//            return newBitmap;
-//        }
-//
+        public Bitmap getRightDrawingCache(Bitmap drawingCache) {
+            // 创建出一个与左半边一样大小的bitmap对象出来
+            int width = (int) (drawingCache.getWidth() / 2.0f + 0.5f);
+            int height = drawingCache.getHeight();
+            Bitmap.Config config = drawingCache.getConfig();
+            Bitmap newBitmap = Bitmap.createBitmap(width, height, config);
+            Canvas canvas = new Canvas(newBitmap);
+            Matrix matrix = new Matrix();//矩阵设置图片以什么形式(平移，缩放，旋转)绘制到画布
+            // matrix.setTranslate(-width, 0);//让图片左移一半，将右半边的图片放置到画布上，只能设置一次操作
+            matrix.postTranslate(-width, 0);//能设置多次操作
+            canvas.drawBitmap(drawingCache, matrix, null);
+            return newBitmap;
+        }
+
 //        //启动开门动画
 //        public void startOpenDoorAnimation() {
 //            //左图左移 透明度
