@@ -176,11 +176,11 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
             mLlAntiVirusScan.setDrawingCacheEnabled(true);
             Bitmap drawingCache = mLlAntiVirusScan.getDrawingCache();
 
-//            mLlAntiVirusAnimation.setVisibility(View.VISIBLE);
-//
-//            //获取百分百界面的左边的图片
-//            Bitmap leftBitmap = getLeftDrawingCache(drawingCache);
-//            mIvAntiVirusAnimationLeft.setImageBitmap(leftBitmap);
+            mLlAntiVirusAnimation.setVisibility(View.VISIBLE);
+
+            //获取百分百界面的左边的图片
+            Bitmap leftBitmap = getLeftDrawingCache(drawingCache);
+            mIvAntiVirusAnimationLeft.setImageBitmap(leftBitmap);
 //            //获取百分百界面的右边的图片
 //            Bitmap rightBitmap = getRightDrawingCache(drawingCache);
 //            mIvAntiVirusAnimationRight.setImageBitmap(rightBitmap);
@@ -192,18 +192,18 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
 //            startOpenDoorAnimation();
         }
 
-//        public Bitmap getLeftDrawingCache(Bitmap drawingCache) {
-//            // 创建出一个与左半边一样大小的bitmap对象出来
-//            int width = (int) (drawingCache.getWidth() / 2.0f + 0.5f);
-//            int height = drawingCache.getHeight();
-//            Bitmap.Config config = drawingCache.getConfig();
-//            Bitmap newBitmap = Bitmap.createBitmap(width, height, config);
-//            Canvas canvas = new Canvas(newBitmap);
-//            Matrix matrix = new Matrix();// 矩阵设置图片以什么形式(平移，缩放，旋转)绘制到画布
-//            canvas.drawBitmap(drawingCache, matrix, null);
-//            return newBitmap;
-//        }
-//
+        public Bitmap getLeftDrawingCache(Bitmap drawingCache) {
+            // 创建出一个与左半边一样大小的bitmap对象出来
+            int width = (int) (drawingCache.getWidth() / 2.0f + 0.5f);
+            int height = drawingCache.getHeight();
+            Bitmap.Config config = drawingCache.getConfig();
+            Bitmap newBitmap = Bitmap.createBitmap(width, height, config);
+            Canvas canvas = new Canvas(newBitmap);
+            Matrix matrix = new Matrix();// 矩阵设置图片以什么形式(平移，缩放，旋转)绘制到画布
+            canvas.drawBitmap(drawingCache, matrix, null);
+            return newBitmap;
+        }
+
 //        public Bitmap getRightDrawingCache(Bitmap drawingCache) {
 //            // 创建出一个与左半边一样大小的bitmap对象出来
 //            int width = (int) (drawingCache.getWidth() / 2.0f + 0.5f);
