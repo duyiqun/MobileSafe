@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
+import com.qun.mobilesafe.application.MyApplication;
 import com.qun.mobilesafe.bean.UpdateBean;
 import com.qun.mobilesafe.utils.Contants;
 import com.qun.mobilesafe.utils.GzipUtil;
@@ -48,6 +49,11 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.out.println("SplashActivity被创建了");
+        MyApplication application = (MyApplication) getApplication();
+        application.data = "被修改后的test";
+
         setContentView(R.layout.activity_splash);
 
         initView();

@@ -3,17 +3,16 @@ package com.qun.mobilesafe.act;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
 import com.qun.mobilesafe.adapter.HomeAdapter;
+import com.qun.mobilesafe.application.MyApplication;
 import com.qun.mobilesafe.bean.HomeBean;
 
 import java.util.ArrayList;
@@ -32,6 +31,11 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MyApplication application = (MyApplication) getApplication();
+        System.out.println(application.data);
+        application.doSometing();
+
         setContentView(R.layout.activity_home);
 
         initView();
