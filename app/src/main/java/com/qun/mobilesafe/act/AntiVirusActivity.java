@@ -30,7 +30,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
     private AntiVirusAdapter mAdapter;
     private LinearLayout mLlAntiVirusScan;
     private ArcProgress mArcProgress;
-    private TextView mTvAntvirusScanName;
+    private TextView mTvAntiVirusScanName;
     private LinearLayout mLlAntiVirusScanResult;
     private TextView mTvAntiVirusScanResult;
     private Button mBtAntiVirusScanResult;
@@ -56,7 +56,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
         //扫描界面
         mLlAntiVirusScan = (LinearLayout) findViewById(R.id.ll_anti_virus_scan);
         mArcProgress = (ArcProgress) findViewById(R.id.arc_progress);
-        mTvAntvirusScanName = (TextView) findViewById(R.id.tv_anti_virus_scan_name);
+        mTvAntiVirusScanName = (TextView) findViewById(R.id.tv_anti_virus_scan_name);
         //扫描结果界面
         mLlAntiVirusScanResult = (LinearLayout) findViewById(R.id.ll_anti_virus_scan_result);
         mTvAntiVirusScanResult = (TextView) findViewById(R.id.tv_anti_virus_scan_result);
@@ -139,10 +139,10 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
             // mLvAntiVirus.setSelection(mData.size() -1);//直接跳转到对应索引，不带有滚动效果
             mLvAntiVirus.smoothScrollToPosition(mData.size() - 1);//滚动到对应的索引，带有滚动效果
 
-//            mArcProgress.setProgress((int) (mData.size() * 100f / max + 0.5f));
+            mArcProgress.setProgress((int) (mData.size() * 100f / max + 0.5f));
 
             // 扫描时，实时显示当前扫描的应用名
-            mTvAntvirusScanName.setText(antiVirusBean.appName);
+            mTvAntiVirusScanName.setText(antiVirusBean.appName);
         }
 
         //doInBackground执行完毕之后，回到主线程执行的方法
