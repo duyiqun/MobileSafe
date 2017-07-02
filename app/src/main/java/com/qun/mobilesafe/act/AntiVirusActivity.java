@@ -1,6 +1,11 @@
 package com.qun.mobilesafe.act;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -72,7 +77,15 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_anti_virus_scan_result:
+                // 关门动画
+                closeDoorAnimation();
+                break;
 
+            default:
+                break;
+        }
     }
 
     /**
@@ -157,12 +170,12 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
             //扫描结束显示出结果界面
             mLlAntiVirusScanResult.setVisibility(View.VISIBLE);
             AntiVirusBean antiVirusBean = mData.get(0);
-            mTvAntiVirusScanResult.setText(antiVirusBean.isAntiVirus ? "您的手机很危险，请注意" : "您的手机很安全，请保持");
+            mTvAntiVirusScanResult.setText(antiVirusBean.isAntiVirus ? "你的手机很危险，请注意" : "你的手机很安全，请放心");
 
-//            //将扫描结果界面的百分之百的图片获取一下
-//            mLlAntiVirusScan.setDrawingCacheEnabled(true);
-//            Bitmap drawingCache = mLlAntiVirusScan.getDrawingCache();
-//
+            //将扫描结果界面的百分之百的图片获取一下
+            mLlAntiVirusScan.setDrawingCacheEnabled(true);
+            Bitmap drawingCache = mLlAntiVirusScan.getDrawingCache();
+
 //            mLlAntiVirusAnimation.setVisibility(View.VISIBLE);
 //
 //            //获取百分百界面的左边的图片
@@ -178,5 +191,95 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
 //            //启动开门动画
 //            startOpenDoorAnimation();
         }
+
+//        public Bitmap getLeftDrawingCache(Bitmap drawingCache) {
+//            // 创建出一个与左半边一样大小的bitmap对象出来
+//            int width = (int) (drawingCache.getWidth() / 2.0f + 0.5f);
+//            int height = drawingCache.getHeight();
+//            Bitmap.Config config = drawingCache.getConfig();
+//            Bitmap newBitmap = Bitmap.createBitmap(width, height, config);
+//            Canvas canvas = new Canvas(newBitmap);
+//            Matrix matrix = new Matrix();// 矩阵设置图片以什么形式(平移，缩放，旋转)绘制到画布
+//            canvas.drawBitmap(drawingCache, matrix, null);
+//            return newBitmap;
+//        }
+//
+//        public Bitmap getRightDrawingCache(Bitmap drawingCache) {
+//            // 创建出一个与左半边一样大小的bitmap对象出来
+//            int width = (int) (drawingCache.getWidth() / 2.0f + 0.5f);
+//            int height = drawingCache.getHeight();
+//            Bitmap.Config config = drawingCache.getConfig();
+//            Bitmap newBitmap = Bitmap.createBitmap(width, height, config);
+//            Canvas canvas = new Canvas(newBitmap);
+//            Matrix matrix = new Matrix();//矩阵设置图片以什么形式(平移，缩放，旋转)绘制到画布
+//            // matrix.setTranslate(-width, 0);//让图片左移一半，将右半边的图片放置到画布上，只能设置一次操作
+//            matrix.postTranslate(-width, 0);//能设置多次操作
+//            canvas.drawBitmap(drawingCache, matrix, null);
+//            return newBitmap;
+//        }
+//
+//        //启动开门动画
+//        public void startOpenDoorAnimation() {
+//            //左图左移 透明度
+//            ObjectAnimator oa1 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "translationX", 0, -mIvAntiVirusAnimationLeft.getWidth());
+//            ObjectAnimator oa2 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "alpha", 1.0f, 0.0f);
+//            //右图右移 透明度
+//            ObjectAnimator oa3 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "translationX", 0, mIvAntiVirusAnimationRight.getWidth());
+//            ObjectAnimator oa4 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "alpha", 1.0f, 0.0f);
+//
+//            //扫描结果 透明度
+//            ObjectAnimator oa5 = ObjectAnimator.ofFloat(mLlAntiVirusScanResult, "alpha", 0.0f, 1.0f);
+//
+//            AnimatorSet animatorSet = new AnimatorSet();
+//            animatorSet.playTogether(oa1, oa2, oa3, oa4, oa5);
+//            animatorSet.setDuration(1500);
+//            animatorSet.start();
+//        }
+//    }
+//
+//    private void closeDoorAnimation() {
+//        // 左图右移 透明度
+//        ObjectAnimator oa1 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "translationX", -mIvAntiVirusAnimationLeft.getWidth(), 0);
+//        ObjectAnimator oa2 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "alpha", 0.0f, 1.0f);
+//        // 右图左移 透明度
+//        ObjectAnimator oa3 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "translationX", mIvAntiVirusAnimationRight.getWidth(), 0);
+//        ObjectAnimator oa4 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "alpha", 0.0f, 1.0f);
+//
+//        // 扫描结果 透明度
+//        ObjectAnimator oa5 = ObjectAnimator.ofFloat(mLlAntiVirusScanResult, "alpha", 1.0f, 0.0f);
+//
+//        AnimatorSet animatorSet = new AnimatorSet();
+//        animatorSet.playTogether(oa1, oa2, oa3, oa4, oa5);
+//        animatorSet.setDuration(1500);
+//        animatorSet.addListener(new Animator.AnimatorListener() {
+//
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                //关门动画执行完毕后，重新扫描
+//                //隐藏动画界面
+//                mLlAntiVirusAnimation.setVisibility(View.INVISIBLE);
+//                //清理集合避免重复
+//                mData.clear();
+//                //显示扫描界面
+//                mLlAntiVirusScan.setVisibility(View.VISIBLE);
+//                initData();
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//
+//            }
+//        });
+//        animatorSet.start();
     }
 }
