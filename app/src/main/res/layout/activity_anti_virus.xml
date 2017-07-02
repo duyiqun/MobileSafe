@@ -24,14 +24,14 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <!--<com.github.lzyzsd.circleprogress.ArcProgress-->
-                <!--android:id="@+id/arc_progress"-->
-                <!--android:layout_width="130dp"-->
-                <!--android:layout_height="130dp"-->
-                <!--custom:arc_bottom_text="扫描中..."-->
-                <!--custom:arc_stroke_width="10dp"-->
-                <!--custom:arc_text_color="#fff"-->
-                <!--custom:arc_text_size="24sp"/>-->
+            <com.github.lzyzsd.circleprogress.ArcProgress
+                android:id="@+id/arc_progress"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                custom:arc_bottom_text="扫描中..."
+                custom:arc_stroke_width="10dp"
+                custom:arc_text_color="#fff"
+                custom:arc_text_size="24sp"/>
 
             <TextView
                 android:id="@+id/tv_anti_virus_scan_name"

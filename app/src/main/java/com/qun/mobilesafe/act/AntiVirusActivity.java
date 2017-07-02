@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.qun.mobilesafe.R;
 import com.qun.mobilesafe.adapter.AntiVirusAdapter;
 import com.qun.mobilesafe.bean.AntiVirusBean;
@@ -28,7 +29,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
     private List<AntiVirusBean> mData = new ArrayList<>();
     private AntiVirusAdapter mAdapter;
     private LinearLayout mLlAntiVirusScan;
-    //    private ArcProgress mArcProgress;
+    private ArcProgress mArcProgress;
     private TextView mTvAntvirusScanName;
     private LinearLayout mLlAntiVirusScanResult;
     private TextView mTvAntiVirusScanResult;
@@ -54,7 +55,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
         mLvAntiVirus = (ListView) findViewById(R.id.lv_anti_virus);
         //扫描界面
         mLlAntiVirusScan = (LinearLayout) findViewById(R.id.ll_anti_virus_scan);
-//        mArcProgress = (ArcProgress) findViewById(R.id.arc_progress);
+        mArcProgress = (ArcProgress) findViewById(R.id.arc_progress);
         mTvAntvirusScanName = (TextView) findViewById(R.id.tv_anti_virus_scan_name);
         //扫描结果界面
         mLlAntiVirusScanResult = (LinearLayout) findViewById(R.id.ll_anti_virus_scan_result);
