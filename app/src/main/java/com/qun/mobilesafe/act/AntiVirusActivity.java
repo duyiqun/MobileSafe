@@ -126,6 +126,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
             super.onProgressUpdate(values);
             AntiVirusBean antiVirusBean = values[0];
 
+            //确保数据集合的修改在主线程中
             if (antiVirusBean.isAntiVirus) {
                 mData.add(0, antiVirusBean);
             } else {
@@ -148,7 +149,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            
+
         }
     }
 }
