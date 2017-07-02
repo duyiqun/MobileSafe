@@ -1,5 +1,6 @@
 package com.qun.mobilesafe.act;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -152,6 +153,30 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
 
             //扫描完毕后，将listview滚动到第一行
             mLvAntiVirus.smoothScrollToPosition(0);
+
+            //扫描结束显示出结果界面
+            mLlAntiVirusScanResult.setVisibility(View.VISIBLE);
+            AntiVirusBean antiVirusBean = mData.get(0);
+            mTvAntiVirusScanResult.setText(antiVirusBean.isAntiVirus ? "您的手机很危险，请注意" : "您的手机很安全，请保持");
+
+//            //将扫描结果界面的百分之百的图片获取一下
+//            mLlAntiVirusScan.setDrawingCacheEnabled(true);
+//            Bitmap drawingCache = mLlAntiVirusScan.getDrawingCache();
+//
+//            mLlAntiVirusAnimation.setVisibility(View.VISIBLE);
+//
+//            //获取百分百界面的左边的图片
+//            Bitmap leftBitmap = getLeftDrawingCache(drawingCache);
+//            mIvAntiVirusAnimationLeft.setImageBitmap(leftBitmap);
+//            //获取百分百界面的右边的图片
+//            Bitmap rightBitmap = getRightDrawingCache(drawingCache);
+//            mIvAntiVirusAnimationRight.setImageBitmap(rightBitmap);
+//
+//            //将扫描界面隐藏
+//            mLlAntiVirusScan.setVisibility(View.INVISIBLE);
+//
+//            //启动开门动画
+//            startOpenDoorAnimation();
         }
     }
 }
