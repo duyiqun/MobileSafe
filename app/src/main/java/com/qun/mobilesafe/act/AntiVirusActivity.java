@@ -1,5 +1,7 @@
 package com.qun.mobilesafe.act;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -77,7 +79,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.bt_anti_virus_scan_result:
                 // 关门动画
-                closeDoorAnimation();
+//                closeDoorAnimation();
                 break;
 
             default:
@@ -182,11 +184,11 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
             Bitmap rightBitmap = getRightDrawingCache(drawingCache);
             mIvAntiVirusAnimationRight.setImageBitmap(rightBitmap);
 
-//            //将扫描界面隐藏
-//            mLlAntiVirusScan.setVisibility(View.INVISIBLE);
-//
-//            //启动开门动画
-//            startOpenDoorAnimation();
+            //将扫描界面隐藏
+            mLlAntiVirusScan.setVisibility(View.INVISIBLE);
+
+            //启动开门动画
+            startOpenDoorAnimation();
         }
 
         public Bitmap getLeftDrawingCache(Bitmap drawingCache) {
@@ -215,25 +217,25 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
             return newBitmap;
         }
 
-//        //启动开门动画
-//        public void startOpenDoorAnimation() {
-//            //左图左移 透明度
-//            ObjectAnimator oa1 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "translationX", 0, -mIvAntiVirusAnimationLeft.getWidth());
-//            ObjectAnimator oa2 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "alpha", 1.0f, 0.0f);
-//            //右图右移 透明度
-//            ObjectAnimator oa3 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "translationX", 0, mIvAntiVirusAnimationRight.getWidth());
-//            ObjectAnimator oa4 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "alpha", 1.0f, 0.0f);
-//
-//            //扫描结果 透明度
-//            ObjectAnimator oa5 = ObjectAnimator.ofFloat(mLlAntiVirusScanResult, "alpha", 0.0f, 1.0f);
-//
-//            AnimatorSet animatorSet = new AnimatorSet();
-//            animatorSet.playTogether(oa1, oa2, oa3, oa4, oa5);
-//            animatorSet.setDuration(1500);
-//            animatorSet.start();
-//        }
-//    }
-//
+        //启动开门动画
+        public void startOpenDoorAnimation() {
+            //左图左移 透明度
+            ObjectAnimator oa1 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "translationX", 0, -mIvAntiVirusAnimationLeft.getWidth());
+            ObjectAnimator oa2 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "alpha", 1.0f, 0.0f);
+            //右图右移 透明度
+            ObjectAnimator oa3 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "translationX", 0, mIvAntiVirusAnimationRight.getWidth());
+            ObjectAnimator oa4 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "alpha", 1.0f, 0.0f);
+
+            //扫描结果 透明度
+            ObjectAnimator oa5 = ObjectAnimator.ofFloat(mLlAntiVirusScanResult, "alpha", 0.0f, 1.0f);
+
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(oa1, oa2, oa3, oa4, oa5);
+            animatorSet.setDuration(1500);
+            animatorSet.start();
+        }
+    }
+
 //    private void closeDoorAnimation() {
 //        // 左图右移 透明度
 //        ObjectAnimator oa1 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "translationX", -mIvAntiVirusAnimationLeft.getWidth(), 0);
@@ -278,5 +280,5 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
 //            }
 //        });
 //        animatorSet.start();
-    }
+}
 }
