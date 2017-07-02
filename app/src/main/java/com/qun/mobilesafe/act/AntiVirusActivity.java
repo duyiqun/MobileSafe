@@ -82,7 +82,6 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
                 // 关门动画
                 closeDoorAnimation();
                 break;
-
             default:
                 break;
         }
