@@ -150,7 +150,8 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-
+            //扫描完毕后，将listview滚动到第一行
+            mLvAntiVirus.smoothScrollToPosition(0);
         }
     }
 }
