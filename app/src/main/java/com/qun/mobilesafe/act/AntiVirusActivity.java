@@ -1,5 +1,6 @@
 package com.qun.mobilesafe.act;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
@@ -79,7 +80,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.bt_anti_virus_scan_result:
                 // 关门动画
-//                closeDoorAnimation();
+                closeDoorAnimation();
                 break;
 
             default:
@@ -236,49 +237,49 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-//    private void closeDoorAnimation() {
-//        // 左图右移 透明度
-//        ObjectAnimator oa1 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "translationX", -mIvAntiVirusAnimationLeft.getWidth(), 0);
-//        ObjectAnimator oa2 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "alpha", 0.0f, 1.0f);
-//        // 右图左移 透明度
-//        ObjectAnimator oa3 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "translationX", mIvAntiVirusAnimationRight.getWidth(), 0);
-//        ObjectAnimator oa4 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "alpha", 0.0f, 1.0f);
-//
-//        // 扫描结果 透明度
-//        ObjectAnimator oa5 = ObjectAnimator.ofFloat(mLlAntiVirusScanResult, "alpha", 1.0f, 0.0f);
-//
-//        AnimatorSet animatorSet = new AnimatorSet();
-//        animatorSet.playTogether(oa1, oa2, oa3, oa4, oa5);
-//        animatorSet.setDuration(1500);
-//        animatorSet.addListener(new Animator.AnimatorListener() {
-//
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                //关门动画执行完毕后，重新扫描
-//                //隐藏动画界面
-//                mLlAntiVirusAnimation.setVisibility(View.INVISIBLE);
-//                //清理集合避免重复
-//                mData.clear();
-//                //显示扫描界面
-//                mLlAntiVirusScan.setVisibility(View.VISIBLE);
-//                initData();
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation) {
-//
-//            }
-//        });
-//        animatorSet.start();
-}
+    private void closeDoorAnimation() {
+        // 左图右移 透明度
+        ObjectAnimator oa1 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "translationX", -mIvAntiVirusAnimationLeft.getWidth(), 0);
+        ObjectAnimator oa2 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationLeft, "alpha", 0.0f, 1.0f);
+        // 右图左移 透明度
+        ObjectAnimator oa3 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "translationX", mIvAntiVirusAnimationRight.getWidth(), 0);
+        ObjectAnimator oa4 = ObjectAnimator.ofFloat(mIvAntiVirusAnimationRight, "alpha", 0.0f, 1.0f);
+
+        // 扫描结果 透明度
+        ObjectAnimator oa5 = ObjectAnimator.ofFloat(mLlAntiVirusScanResult, "alpha", 1.0f, 0.0f);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(oa1, oa2, oa3, oa4, oa5);
+        animatorSet.setDuration(1500);
+        animatorSet.addListener(new Animator.AnimatorListener() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //关门动画执行完毕后，重新扫描
+                //隐藏动画界面
+                mLlAntiVirusAnimation.setVisibility(View.INVISIBLE);
+                //清理集合避免重复
+                mData.clear();
+                //显示扫描界面
+                mLlAntiVirusScan.setVisibility(View.VISIBLE);
+                initData();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+        });
+        animatorSet.start();
+    }
 }
