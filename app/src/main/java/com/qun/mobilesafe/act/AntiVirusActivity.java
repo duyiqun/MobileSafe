@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.qun.mobilesafe.R;
+import com.qun.mobilesafe.adapter.AntiVirusAdapter;
 import com.qun.mobilesafe.bean.AntiVirusBean;
 import com.qun.mobilesafe.bean.AppInfoBean;
 import com.qun.mobilesafe.db.AntiVirusDao;
@@ -25,7 +26,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
 
     private ListView mLvAntiVirus;
     private List<AntiVirusBean> mData = new ArrayList<>();
-    //    private AntiVirusAdapter mAdapter;
+    private AntiVirusAdapter mAdapter;
     private LinearLayout mLlAntiVirusScan;
     //    private ArcProgress mArcProgress;
     private TextView mTvAntvirusScanName;
@@ -72,12 +73,29 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    /**
+     * 泛型一：决定doInBackground的参数类型，并且决定了execute的参数类型，execute的参数传递给了doInBackground方法作为参数
+     * 泛型二：设置了publishProgress方法与onProgressUpdate方法的参数类型，并且publishProgress方法执行一次会导致onProgressUpdate方法会执行一次
+     * 泛型三：决定doInBackground的返回值类型，并且决定了onPostExecute的参数类型，doInBackground的返回值就是传递给onPostExecute的参数
+     */
+
     private class AntiVirusTask extends AsyncTask<String, AntiVirusBean, String> {
+
+        private int max;
+
+        //在子线程执行之前的主线程操作
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mAdapter = new AntiVirusAdapter(AntiVirusActivity.this, mData);
+            mLvAntiVirus.setAdapter(mAdapter);
+        }
 
         //唯一一个运行在子线程中的方法
         @Override
         protected String doInBackground(String... params) {
             List<AppInfoBean> allAppInfo = AppInfoProvider.getAllAppInfo(getApplicationContext());
+            max = allAppInfo.size();
             for (AppInfoBean appInfoBean : allAppInfo) {
                 String fileMd5 = MD5Utils.getFileMd5(appInfoBean.appPath);
                 boolean isAntiVirus = AntiVirusDao.queryAntiVirus(getApplicationContext(), fileMd5);
@@ -85,7 +103,7 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
                 AntiVirusBean antiVirusBean = new AntiVirusBean();
                 antiVirusBean.appIcon = appInfoBean.appIcon;
                 antiVirusBean.appName = appInfoBean.appName;
-                antiVirusBean.isAnitVirus = isAntiVirus;
+                antiVirusBean.isAntiVirus = isAntiVirus;
 
                 //在doInBackground中mData里面获取一个数据，就应该在主线程中刷新一次
                 //该方法执行，能够导致AsyncTask里面的一个运行在主线程的方法执行一次onProgressUpdate;
@@ -94,6 +112,43 @@ public class AntiVirusActivity extends AppCompatActivity implements View.OnClick
                 SystemClock.sleep(50);
             }
             return null;
+        }
+
+        // The content of the adapter has changed but ListView did not receive a
+        // notification. Make sure the content of your adapter is not modified
+        // from a background thread, but only from the UI thread. [in
+        // ListView(2131034115, class android.widget.ListView) with
+        // Adapter(class com.qun.mobilesafe.adapter.AntiVirusAdapter)]
+
+        //运行在主线程
+        @Override
+        protected void onProgressUpdate(AntiVirusBean... values) {
+            super.onProgressUpdate(values);
+            AntiVirusBean antiVirusBean = values[0];
+
+            if (antiVirusBean.isAntiVirus) {
+                mData.add(0, antiVirusBean);
+            } else {
+                mData.add(antiVirusBean);
+            }
+
+            mAdapter.notifyDataSetChanged();
+            // 滑动到底部实现自动滚动功能
+            // mLvAntiVirus.setSelection(mData.size() -1);//直接跳转到对应索引，不带有滚动效果
+            mLvAntiVirus.smoothScrollToPosition(mData.size() - 1);//滚动到对应的索引，带有滚动效果
+
+//            mArcProgress.setProgress((int) (mData.size() * 100f / max + 0.5f));
+
+            // 扫描时，实时显示当前扫描的应用名
+            mTvAntvirusScanName.setText(antiVirusBean.appName);
+        }
+
+        //doInBackground执行完毕之后，回到主线程执行的方法
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            
         }
     }
 }

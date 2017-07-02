@@ -6,6 +6,5 @@ public class AntiVirusBean {
 
 	public Drawable appIcon;
 	public String appName;
-	public boolean isAnitVirus;
-
+	public boolean isAntiVirus;
 }
